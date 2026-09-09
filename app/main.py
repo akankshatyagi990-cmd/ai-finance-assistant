@@ -2,9 +2,9 @@ from finance import calculate_simple_interest
 
 print("Welcome to AI Finance Assistant!")
 
-principal = 50000
-rate = 8
-time = 2
+principal = float(input("Enter principal amount: "))
+rate = float(input("Enter annual interest rate (%): "))
+time = float(input("Enter time in years: "))
 
 interest, amount = calculate_simple_interest(principal, rate, time)
 
