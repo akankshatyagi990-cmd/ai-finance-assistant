@@ -23,6 +23,8 @@ from financial_summary import (
 
 from financial_advisor import run_financial_advisor
 
+from spending_analysis import show_spending_analysis
+
 
 # Shared data
 expenses = []
@@ -45,9 +47,10 @@ while True:
     print("6. Income Tracker")
     print("7. Financial Summary")
     print("8. Financial Advisor")
-    print("9. Exit")
+    print("9. Spending Analysis")
+    print("10. Exit")
 
-    choice = input("\nEnter your choice (1-9): ")
+    choice = input("\nEnter your choice (1-10): ")
 
     try:
 
@@ -330,9 +333,19 @@ while True:
 
 
         # -------------------------------
-        # Exit
+        # Spending Analysis
         # -------------------------------
         elif choice == "9":
+
+            show_spending_analysis(
+                expenses
+            )
+
+
+        # -------------------------------
+        # Exit
+        # -------------------------------
+        elif choice == "10":
 
             print(
                 "\nThank you for using "
@@ -349,7 +362,7 @@ while True:
 
             print(
                 "\nInvalid choice. "
-                "Please select 1 to 9."
+                "Please select 1 to 10."
             )
 
 
