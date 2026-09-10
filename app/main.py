@@ -25,6 +25,8 @@ from financial_advisor import run_financial_advisor
 
 from spending_analysis import show_spending_analysis
 
+from ai_advisor import show_ai_prompt
+
 
 # Shared data
 expenses = []
@@ -48,9 +50,10 @@ while True:
     print("7. Financial Summary")
     print("8. Financial Advisor")
     print("9. Spending Analysis")
-    print("10. Exit")
+    print("10. Generate AI Financial Prompt")
+    print("11. Exit")
 
-    choice = input("\nEnter your choice (1-10): ")
+    choice = input("\nEnter your choice (1-11): ")
 
     try:
 
@@ -343,9 +346,47 @@ while True:
 
 
         # -------------------------------
-        # Exit
+        # AI Financial Prompt
         # -------------------------------
         elif choice == "10":
+
+            total_income = calculate_total_income(
+                incomes
+            )
+
+            total_expenses = calculate_total_expenses(
+                expenses
+            )
+
+            (
+                remaining_balance,
+                savings_percentage
+            ) = calculate_financial_summary(
+                total_income,
+                total_expenses
+            )
+
+            (
+                highest_category,
+                highest_amount
+            ) = find_highest_spending_category(
+                expenses
+            )
+
+            show_ai_prompt(
+                total_income,
+                total_expenses,
+                remaining_balance,
+                savings_percentage,
+                highest_category,
+                highest_amount
+            )
+
+
+        # -------------------------------
+        # Exit
+        # -------------------------------
+        elif choice == "11":
 
             print(
                 "\nThank you for using "
@@ -362,7 +403,7 @@ while True:
 
             print(
                 "\nInvalid choice. "
-                "Please select 1 to 10."
+                "Please select 1 to 11."
             )
 
 
