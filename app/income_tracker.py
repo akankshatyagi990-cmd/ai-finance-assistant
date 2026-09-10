@@ -47,12 +47,15 @@ def show_income_summary(incomes):
 
     print("\n--- Income Summary ---")
 
+    if len(source_totals) == 0:
+        print("No income recorded.")
+        return
+
     for source, amount in source_totals.items():
         print(source, "₹", round(amount, 2))
 
 
-def run_income_tracker():
-    incomes = []
+def run_income_tracker(incomes):
 
     print("\n=================================")
     print("        Income Tracker")
@@ -65,7 +68,7 @@ def run_income_tracker():
         print("2. View Income")
         print("3. View Income Summary")
         print("4. View Total Income")
-        print("5. Exit")
+        print("5. Return to Main Menu")
 
         choice = input("\nEnter your choice: ")
 
@@ -74,7 +77,9 @@ def run_income_tracker():
             source = input("Enter income source: ")
 
             try:
-                amount = float(input("Enter income amount: "))
+                amount = float(
+                    input("Enter income amount: ")
+                )
 
                 if amount <= 0:
                     print("Amount must be greater than 0.")
@@ -110,7 +115,7 @@ def run_income_tracker():
 
         elif choice == "5":
 
-            print("\nThank you for using Income Tracker!")
+            print("\nReturning to Main Menu...")
             break
 
         else:
@@ -119,4 +124,7 @@ def run_income_tracker():
 
 
 if __name__ == "__main__":
-    run_income_tracker()
+
+    incomes = []
+
+    run_income_tracker(incomes)

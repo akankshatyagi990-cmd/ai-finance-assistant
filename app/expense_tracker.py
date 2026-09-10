@@ -47,12 +47,15 @@ def show_category_summary(expenses):
 
     print("\n--- Category Summary ---")
 
+    if len(category_totals) == 0:
+        print("No expenses recorded.")
+        return
+
     for category, amount in category_totals.items():
         print(category, "₹", round(amount, 2))
 
 
-def run_expense_tracker():
-    expenses = []
+def run_expense_tracker(expenses):
 
     print("\n=================================")
     print("       Expense Tracker")
@@ -65,7 +68,7 @@ def run_expense_tracker():
         print("2. View Expenses")
         print("3. View Category Summary")
         print("4. View Total Expenses")
-        print("5. Exit")
+        print("5. Return to Main Menu")
 
         choice = input("\nEnter your choice: ")
 
@@ -74,10 +77,13 @@ def run_expense_tracker():
             category = input("Enter expense category: ")
 
             try:
-                amount = float(input("Enter expense amount: "))
+                amount = float(
+                    input("Enter expense amount: ")
+                )
 
                 if amount <= 0:
                     print("Amount must be greater than 0.")
+
                 else:
                     add_expense(
                         expenses,
@@ -109,7 +115,7 @@ def run_expense_tracker():
 
         elif choice == "5":
 
-            print("\nThank you for using Expense Tracker!")
+            print("\nReturning to Main Menu...")
             break
 
         else:
@@ -118,4 +124,7 @@ def run_expense_tracker():
 
 
 if __name__ == "__main__":
-    run_expense_tracker()
+
+    expenses = []
+
+    run_expense_tracker(expenses)
