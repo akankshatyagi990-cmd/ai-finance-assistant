@@ -5,18 +5,21 @@ from finance import (
     calculate_emi
 )
 
+from expense_tracker import run_expense_tracker
+
 
 print("=================================")
 print("     AI Finance Assistant")
 print("=================================")
 
-print("\nChoose a calculation:")
+print("\nChoose an option:")
 print("1. Simple Interest")
 print("2. Compound Interest")
 print("3. SIP Calculator")
 print("4. EMI Calculator")
+print("5. Expense Tracker")
 
-choice = input("\nEnter your choice (1, 2, 3 or 4): ")
+choice = input("\nEnter your choice (1, 2, 3, 4 or 5): ")
 
 
 try:
@@ -54,6 +57,7 @@ try:
         principal = float(input("Enter principal amount: "))
         rate = float(input("Enter annual interest rate (%): "))
         time = float(input("Enter time in years: "))
+
         compounds_per_year = int(
             input("Enter number of times compounded per year: ")
         )
@@ -86,9 +90,11 @@ try:
         monthly_investment = float(
             input("Enter monthly investment amount: ")
         )
+
         annual_rate = float(
             input("Enter expected annual return rate (%): ")
         )
+
         years = float(
             input("Enter investment period in years: ")
         )
@@ -137,11 +143,21 @@ try:
 
 
     # -------------------------------
+    # Expense Tracker
+    # -------------------------------
+    elif choice == "5":
+
+        run_expense_tracker()
+
+
+    # -------------------------------
     # Invalid Choice
     # -------------------------------
     else:
-        print("\nInvalid choice. Please select 1, 2, 3 or 4.")
+
+        print("\nInvalid choice. Please select 1, 2, 3, 4 or 5.")
 
 
 except ValueError:
+
     print("\nInvalid input. Please enter numbers only.")
