@@ -1,7 +1,8 @@
 from finance import (
     calculate_simple_interest,
     calculate_compound_interest,
-    calculate_sip
+    calculate_sip,
+    calculate_emi
 )
 
 
@@ -13,8 +14,9 @@ print("\nChoose a calculation:")
 print("1. Simple Interest")
 print("2. Compound Interest")
 print("3. SIP Calculator")
+print("4. EMI Calculator")
 
-choice = input("\nEnter your choice (1, 2 or 3): ")
+choice = input("\nEnter your choice (1, 2, 3 or 4): ")
 
 
 try:
@@ -77,7 +79,7 @@ try:
 
 
     # -------------------------------
-    # SIP
+    # SIP Calculator
     # -------------------------------
     elif choice == "3":
 
@@ -109,10 +111,36 @@ try:
 
 
     # -------------------------------
+    # EMI Calculator
+    # -------------------------------
+    elif choice == "4":
+
+        principal = float(input("Enter loan amount: "))
+        annual_rate = float(input("Enter annual interest rate (%): "))
+        years = float(input("Enter loan period in years: "))
+
+        if principal <= 0 or annual_rate < 0 or years <= 0:
+            print("\nPlease enter valid values.")
+
+        else:
+            emi, total_interest, total_payment = calculate_emi(
+                principal,
+                annual_rate,
+                years
+            )
+
+            print("\n--- EMI Result ---")
+            print("Loan Amount:", round(principal, 2))
+            print("Monthly EMI:", round(emi, 2))
+            print("Total Interest:", round(total_interest, 2))
+            print("Total Payment:", round(total_payment, 2))
+
+
+    # -------------------------------
     # Invalid Choice
     # -------------------------------
     else:
-        print("\nInvalid choice. Please select 1, 2 or 3.")
+        print("\nInvalid choice. Please select 1, 2, 3 or 4.")
 
 
 except ValueError:
