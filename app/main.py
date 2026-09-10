@@ -6,6 +6,7 @@ from finance import (
 )
 
 from expense_tracker import run_expense_tracker
+from income_tracker import run_income_tracker
 
 
 print("=================================")
@@ -18,8 +19,9 @@ print("2. Compound Interest")
 print("3. SIP Calculator")
 print("4. EMI Calculator")
 print("5. Expense Tracker")
+print("6. Income Tracker")
 
-choice = input("\nEnter your choice (1, 2, 3, 4 or 5): ")
+choice = input("\nEnter your choice (1-6): ")
 
 
 try:
@@ -57,7 +59,6 @@ try:
         principal = float(input("Enter principal amount: "))
         rate = float(input("Enter annual interest rate (%): "))
         time = float(input("Enter time in years: "))
-
         compounds_per_year = int(
             input("Enter number of times compounded per year: ")
         )
@@ -151,11 +152,19 @@ try:
 
 
     # -------------------------------
+    # Income Tracker
+    # -------------------------------
+    elif choice == "6":
+
+        run_income_tracker()
+
+
+    # -------------------------------
     # Invalid Choice
     # -------------------------------
     else:
 
-        print("\nInvalid choice. Please select 1, 2, 3, 4 or 5.")
+        print("\nInvalid choice. Please select 1 to 6.")
 
 
 except ValueError:
