@@ -10,7 +10,6 @@ from finance import (
 )
 
 from financial_summary import (
-    calculate_financial_summary,
     find_highest_spending_category
 )
 
@@ -35,20 +34,293 @@ from database import (
 )
 
 
-# ---------------------------------
-# Page Configuration
-# ---------------------------------
+# =========================================================
+# PAGE CONFIGURATION
+# =========================================================
 
 st.set_page_config(
     page_title="AI Finance Assistant",
-    page_icon="💰",
-    layout="wide"
+    page_icon="◈",
+    layout="wide",
+    initial_sidebar_state="expanded"
 )
 
 
-# ---------------------------------
-# Helper Functions
-# ---------------------------------
+# =========================================================
+# PROFESSIONAL STYLING
+# =========================================================
+
+st.markdown(
+    """
+    <style>
+
+    /* ---------- Main Application ---------- */
+
+    .stApp {
+        background-color: #0b0f14;
+    }
+
+    .main .block-container {
+        max-width: 1450px;
+        padding-top: 2.5rem;
+        padding-bottom: 3rem;
+        padding-left: 3rem;
+        padding-right: 3rem;
+    }
+
+
+    /* ---------- Sidebar ---------- */
+
+    section[data-testid="stSidebar"] {
+        background-color: #11161d;
+        border-right: 1px solid #242b35;
+    }
+
+    section[data-testid="stSidebar"] .block-container {
+        padding-top: 2rem;
+        padding-left: 1.3rem;
+        padding-right: 1.3rem;
+    }
+
+    .sidebar-brand {
+        font-size: 1.15rem;
+        font-weight: 700;
+        color: #f4f7fa;
+        letter-spacing: -0.3px;
+        margin-bottom: 0.3rem;
+    }
+
+    .sidebar-subtitle {
+        font-size: 0.78rem;
+        color: #8d98a7;
+        line-height: 1.5;
+        margin-bottom: 2rem;
+    }
+
+
+    /* ---------- Typography ---------- */
+
+    h1 {
+        font-size: 2.35rem !important;
+        font-weight: 700 !important;
+        letter-spacing: -1px !important;
+        color: #f5f7fa !important;
+    }
+
+    h2 {
+        font-size: 1.45rem !important;
+        font-weight: 650 !important;
+        color: #f0f3f6 !important;
+    }
+
+    h3 {
+        font-size: 1.05rem !important;
+        font-weight: 600 !important;
+        color: #e7ebef !important;
+    }
+
+    p {
+        color: #9ca7b5;
+    }
+
+
+    /* ---------- Page Header ---------- */
+
+    .page-eyebrow {
+        color: #7f8b99;
+        font-size: 0.78rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 1.2px;
+        margin-bottom: 0.45rem;
+    }
+
+    .page-description {
+        color: #8f9aa8;
+        font-size: 0.92rem;
+        margin-top: -0.8rem;
+        margin-bottom: 2rem;
+    }
+
+
+    /* ---------- KPI Cards ---------- */
+
+    .metric-card {
+        background: #121820;
+        border: 1px solid #242d38;
+        border-radius: 12px;
+        padding: 1.25rem 1.35rem;
+        min-height: 125px;
+    }
+
+    .metric-label {
+        color: #8793a1;
+        font-size: 0.76rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.7px;
+        margin-bottom: 0.7rem;
+    }
+
+    .metric-value {
+        color: #f4f6f8;
+        font-size: 1.65rem;
+        font-weight: 700;
+        letter-spacing: -0.5px;
+    }
+
+    .metric-small {
+        color: #7f8b98;
+        font-size: 0.75rem;
+        margin-top: 0.45rem;
+    }
+
+
+    /* ---------- Content Cards ---------- */
+
+    .content-card {
+        background: #121820;
+        border: 1px solid #242d38;
+        border-radius: 12px;
+        padding: 1.35rem;
+        margin-bottom: 1rem;
+    }
+
+    .card-title {
+        color: #eef1f4;
+        font-size: 1rem;
+        font-weight: 650;
+        margin-bottom: 0.2rem;
+    }
+
+    .card-subtitle {
+        color: #7f8b98;
+        font-size: 0.78rem;
+        margin-bottom: 1rem;
+    }
+
+
+    /* ---------- Financial Health ---------- */
+
+    .health-score {
+        font-size: 3rem;
+        font-weight: 750;
+        color: #f4f6f8;
+        line-height: 1;
+    }
+
+    .health-label {
+        color: #7f8b98;
+        font-size: 0.8rem;
+        margin-top: 0.5rem;
+    }
+
+
+    /* ---------- Insight Card ---------- */
+
+    .insight-card {
+        background: #151c25;
+        border: 1px solid #293340;
+        border-radius: 12px;
+        padding: 1.35rem;
+    }
+
+    .insight-label {
+        color: #8d99a8;
+        font-size: 0.72rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin-bottom: 0.55rem;
+    }
+
+    .insight-text {
+        color: #e9edf1;
+        font-size: 0.95rem;
+        line-height: 1.55;
+    }
+
+
+    /* ---------- Section Label ---------- */
+
+    .section-label {
+        color: #e9edf1;
+        font-size: 1.05rem;
+        font-weight: 650;
+        margin-top: 1.2rem;
+        margin-bottom: 0.8rem;
+    }
+
+
+    /* ---------- Transaction Rows ---------- */
+
+    .transaction-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background: #121820;
+        border: 1px solid #242d38;
+        border-radius: 9px;
+        padding: 0.9rem 1rem;
+        margin-bottom: 0.55rem;
+    }
+
+    .transaction-name {
+        color: #e7ebef;
+        font-weight: 600;
+        font-size: 0.88rem;
+    }
+
+    .transaction-date {
+        color: #727e8d;
+        font-size: 0.72rem;
+        margin-top: 0.2rem;
+    }
+
+    .transaction-income {
+        color: #5fd18b;
+        font-weight: 650;
+    }
+
+    .transaction-expense {
+        color: #e47c7c;
+        font-weight: 650;
+    }
+
+
+    /* ---------- Buttons ---------- */
+
+    .stButton > button {
+        border-radius: 8px;
+        font-weight: 600;
+        min-height: 42px;
+    }
+
+
+    /* ---------- Tables ---------- */
+
+    [data-testid="stDataFrame"] {
+        border: 1px solid #242d38;
+        border-radius: 10px;
+        overflow: hidden;
+    }
+
+
+    /* ---------- Dividers ---------- */
+
+    hr {
+        border-color: #242b35 !important;
+    }
+
+    </style>
+    """,
+    unsafe_allow_html=True
+)
+
+
+# =========================================================
+# HELPER FUNCTIONS
+# =========================================================
 
 def load_income():
 
@@ -83,40 +355,109 @@ def load_expenses():
 def calculate_totals(incomes, expenses):
 
     total_income = sum(
-        income["amount"]
-        for income in incomes
+        item["amount"]
+        for item in incomes
     )
 
     total_expenses = sum(
-        expense["amount"]
-        for expense in expenses
+        item["amount"]
+        for item in expenses
     )
 
-    remaining_balance = (
-        total_income - total_expenses
-    )
+    balance = total_income - total_expenses
 
     if total_income > 0:
 
-        savings_percentage = (
-            remaining_balance / total_income
+        savings_rate = (
+            balance / total_income
         ) * 100
 
     else:
 
-        savings_percentage = 0
+        savings_rate = 0
 
     return (
         total_income,
         total_expenses,
-        remaining_balance,
-        savings_percentage
+        balance,
+        savings_rate
     )
 
 
-# ---------------------------------
-# Load Database Data
-# ---------------------------------
+def calculate_health_score(
+    savings_rate,
+    total_income,
+    total_expenses
+):
+
+    if total_income == 0:
+
+        return 0
+
+    score = 0
+
+    # Savings component
+    if savings_rate >= 50:
+        score += 50
+
+    elif savings_rate >= 30:
+        score += 40
+
+    elif savings_rate >= 20:
+        score += 30
+
+    elif savings_rate >= 10:
+        score += 20
+
+    elif savings_rate > 0:
+        score += 10
+
+    # Expense-to-income component
+    expense_ratio = (
+        total_expenses / total_income
+    ) * 100
+
+    if expense_ratio <= 30:
+        score += 40
+
+    elif expense_ratio <= 50:
+        score += 30
+
+    elif expense_ratio <= 70:
+        score += 20
+
+    elif expense_ratio <= 90:
+        score += 10
+
+    # Basic activity component
+    score += 10
+
+    return min(score, 100)
+
+
+def get_health_label(score):
+
+    if score >= 80:
+        return "Strong financial position"
+
+    elif score >= 60:
+        return "Healthy financial position"
+
+    elif score >= 40:
+        return "Needs improvement"
+
+    else:
+        return "Needs attention"
+
+
+def format_currency(amount):
+
+    return f"₹{amount:,.0f}"
+
+
+# =========================================================
+# LOAD DATA
+# =========================================================
 
 incomes = load_income()
 expenses = load_expenses()
@@ -124,26 +465,45 @@ expenses = load_expenses()
 (
     total_income,
     total_expenses,
-    remaining_balance,
-    savings_percentage
+    balance,
+    savings_rate
 ) = calculate_totals(
     incomes,
     expenses
 )
 
-
-# ---------------------------------
-# Sidebar
-# ---------------------------------
-
-st.sidebar.title("💰 AI Finance Assistant")
-
-st.sidebar.write(
-    "Manage your finances, track spending "
-    "and get AI-powered insights."
+health_score = calculate_health_score(
+    savings_rate,
+    total_income,
+    total_expenses
 )
 
-st.sidebar.divider()
+health_label = get_health_label(
+    health_score
+)
+
+
+# =========================================================
+# SIDEBAR
+# =========================================================
+
+st.sidebar.markdown(
+    """
+    <div class="sidebar-brand">
+        AI Finance Assistant
+    </div>
+
+    <div class="sidebar-subtitle">
+        Personal financial intelligence
+        and spending management.
+    </div>
+    """,
+    unsafe_allow_html=True
+)
+
+st.sidebar.markdown(
+    "**Workspace**"
+)
 
 page = st.sidebar.radio(
     "Navigation",
@@ -154,182 +514,461 @@ page = st.sidebar.radio(
         "Spending Analysis",
         "Calculators",
         "AI Financial Advisor"
-    ]
+    ],
+    label_visibility="collapsed"
+)
+
+st.sidebar.divider()
+
+st.sidebar.caption(
+    "AI Finance Assistant · Portfolio Project"
 )
 
 
-# =================================
+# =========================================================
 # DASHBOARD
-# =================================
+# =========================================================
 
 if page == "Dashboard":
 
-    st.title("💰 AI Finance Assistant")
-
-    st.write(
-        "Your personal financial dashboard"
+    st.markdown(
+        '<div class="page-eyebrow">Financial overview</div>',
+        unsafe_allow_html=True
     )
 
-    st.divider()
+    st.title("Dashboard")
 
-    # ---------------------------------
-    # Financial Metric Cards
-    # ---------------------------------
+    st.markdown(
+        """
+        <div class="page-description">
+            A clear view of your income, spending and financial position.
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
+
+    # -----------------------------------------
+    # KPI CARDS
+    # -----------------------------------------
 
     col1, col2, col3, col4 = st.columns(4)
 
     with col1:
 
-        st.metric(
-            "Total Income",
-            f"₹{total_income:,.2f}"
+        st.markdown(
+            f"""
+            <div class="metric-card">
+                <div class="metric-label">Total Income</div>
+                <div class="metric-value">
+                    {format_currency(total_income)}
+                </div>
+                <div class="metric-small">
+                    Recorded income
+                </div>
+            </div>
+            """,
+            unsafe_allow_html=True
         )
 
     with col2:
 
-        st.metric(
-            "Total Expenses",
-            f"₹{total_expenses:,.2f}"
+        st.markdown(
+            f"""
+            <div class="metric-card">
+                <div class="metric-label">Total Expenses</div>
+                <div class="metric-value">
+                    {format_currency(total_expenses)}
+                </div>
+                <div class="metric-small">
+                    Recorded spending
+                </div>
+            </div>
+            """,
+            unsafe_allow_html=True
         )
 
     with col3:
 
-        st.metric(
-            "Balance",
-            f"₹{remaining_balance:,.2f}"
+        st.markdown(
+            f"""
+            <div class="metric-card">
+                <div class="metric-label">Available Balance</div>
+                <div class="metric-value">
+                    {format_currency(balance)}
+                </div>
+                <div class="metric-small">
+                    Income minus expenses
+                </div>
+            </div>
+            """,
+            unsafe_allow_html=True
         )
 
     with col4:
 
-        st.metric(
-            "Savings Rate",
-            f"{savings_percentage:.2f}%"
+        st.markdown(
+            f"""
+            <div class="metric-card">
+                <div class="metric-label">Savings Rate</div>
+                <div class="metric-value">
+                    {savings_rate:.1f}%
+                </div>
+                <div class="metric-small">
+                    Based on recorded income
+                </div>
+            </div>
+            """,
+            unsafe_allow_html=True
         )
 
-    st.divider()
+    st.write("")
 
-    # ---------------------------------
-    # Financial Overview
-    # ---------------------------------
+    # -----------------------------------------
+    # HEALTH + INSIGHT
+    # -----------------------------------------
 
-    st.subheader("📊 Financial Overview")
+    col1, col2 = st.columns([1, 2])
 
-    chart_data = pd.DataFrame(
-        {
-            "Category": [
-                "Income",
-                "Expenses"
-            ],
-            "Amount": [
-                total_income,
-                total_expenses
-            ]
-        }
+    with col1:
+
+        st.markdown(
+            """
+            <div class="content-card">
+                <div class="card-title">
+                    Financial Health
+                </div>
+                <div class="card-subtitle">
+                    Based on savings and spending behaviour
+                </div>
+            """,
+            unsafe_allow_html=True
+        )
+
+        st.markdown(
+            f"""
+                <div class="health-score">
+                    {health_score}
+                    <span style="font-size:1.1rem;color:#7f8b98;">
+                        / 100
+                    </span>
+                </div>
+
+                <div class="health-label">
+                    {health_label}
+                </div>
+            """,
+            unsafe_allow_html=True
+        )
+
+        st.progress(
+            health_score / 100
+        )
+
+        st.markdown(
+            "</div>",
+            unsafe_allow_html=True
+        )
+
+    with col2:
+
+        if balance < 0:
+
+            insight = (
+                "Your current expenses are higher than "
+                "your recorded income. Reviewing your "
+                "largest spending categories could help "
+                "improve your financial position."
+            )
+
+        elif savings_rate < 20:
+
+            insight = (
+                "Your savings rate is currently below "
+                "20%. Consider reviewing recurring and "
+                "discretionary expenses."
+            )
+
+        elif savings_rate < 40:
+
+            insight = (
+                "Your savings rate is moderate. "
+                "Maintaining consistent expense tracking "
+                "could help you gradually improve it."
+            )
+
+        else:
+
+            insight = (
+                "Your current savings rate is strong. "
+                "Continue monitoring your spending and "
+                "maintaining consistent savings habits."
+            )
+
+        st.markdown(
+            f"""
+            <div class="insight-card">
+                <div class="insight-label">
+                    Financial Insight
+                </div>
+
+                <div class="insight-text">
+                    {insight}
+                </div>
+            </div>
+            """,
+            unsafe_allow_html=True
+        )
+
+    st.write("")
+
+    # -----------------------------------------
+    # MONTHLY TREND + SPENDING
+    # -----------------------------------------
+
+    left, right = st.columns([1.6, 1])
+
+    with left:
+
+        st.markdown(
+            """
+            <div class="section-label">
+                Monthly Financial Trend
+            </div>
+            """,
+            unsafe_allow_html=True
+        )
+
+        history = get_monthly_history()
+
+        if len(history) > 0:
+
+            chart_data = pd.DataFrame(
+                {
+                    "Income": [
+                        item["income"]
+                        for item in reversed(history)
+                    ],
+                    "Expenses": [
+                        item["expenses"]
+                        for item in reversed(history)
+                    ]
+                },
+                index=[
+                    item["month"]
+                    for item in reversed(history)
+                ]
+            )
+
+            st.line_chart(
+                chart_data,
+                height=330
+            )
+
+        else:
+
+            st.info(
+                "Add transactions to build your monthly trend."
+            )
+
+    with right:
+
+        st.markdown(
+            """
+            <div class="section-label">
+                Spending Breakdown
+            </div>
+            """,
+            unsafe_allow_html=True
+        )
+
+        if len(expenses) > 0:
+
+            category_totals = (
+                calculate_category_totals(
+                    expenses
+                )
+            )
+
+            spending_df = pd.DataFrame(
+                {
+                    "Amount": category_totals
+                }
+            )
+
+            st.bar_chart(
+                spending_df,
+                height=330
+            )
+
+        else:
+
+            st.info(
+                "No spending data available yet."
+            )
+
+    # -----------------------------------------
+    # RECENT TRANSACTIONS
+    # -----------------------------------------
+
+    st.markdown(
+        """
+        <div class="section-label">
+            Recent Transactions
+        </div>
+        """,
+        unsafe_allow_html=True
     )
 
-    if total_income > 0 or total_expenses > 0:
+    transactions = []
 
-        st.bar_chart(
-            chart_data.set_index("Category")
+    for item in incomes:
+
+        transactions.append(
+            {
+                "date": item["date"],
+                "name": item["source"],
+                "type": "Income",
+                "amount": item["amount"]
+            }
         )
+
+    for item in expenses:
+
+        transactions.append(
+            {
+                "date": item["date"],
+                "name": item["category"],
+                "type": "Expense",
+                "amount": item["amount"]
+            }
+        )
+
+    transactions.sort(
+        key=lambda x: x["date"],
+        reverse=True
+    )
+
+    if len(transactions) > 0:
+
+        for transaction in transactions[:5]:
+
+            amount_class = (
+                "transaction-income"
+                if transaction["type"] == "Income"
+                else "transaction-expense"
+            )
+
+            sign = (
+                "+"
+                if transaction["type"] == "Income"
+                else "-"
+            )
+
+            st.markdown(
+                f"""
+                <div class="transaction-row">
+
+                    <div>
+                        <div class="transaction-name">
+                            {transaction["name"]}
+                        </div>
+
+                        <div class="transaction-date">
+                            {transaction["date"]}
+                            · {transaction["type"]}
+                        </div>
+                    </div>
+
+                    <div class="{amount_class}">
+                        {sign} ₹{transaction["amount"]:,.2f}
+                    </div>
+
+                </div>
+                """,
+                unsafe_allow_html=True
+            )
 
     else:
 
         st.info(
-            "Add some transactions to see "
-            "your financial overview."
-        )
-
-    st.divider()
-
-    # ---------------------------------
-    # Quick Summary
-    # ---------------------------------
-
-    st.subheader("💡 Quick Summary")
-
-    if total_income == 0 and total_expenses == 0:
-
-        st.info(
-            "No financial data yet. "
-            "Add your first transaction."
-        )
-
-    elif remaining_balance < 0:
-
-        st.error(
-            "⚠️ Your expenses are currently "
-            "higher than your income."
-        )
-
-    elif savings_percentage < 20:
-
-        st.warning(
-            "Your savings rate is below 20%. "
-            "Consider reviewing your expenses."
-        )
-
-    elif savings_percentage < 40:
-
-        st.info(
-            "Your savings rate is moderate. "
-            "Keep working toward higher savings."
-        )
-
-    else:
-
-        st.success(
-            "🎉 Your savings rate is looking good!"
+            "No transactions recorded yet."
         )
 
 
-# =================================
+# =========================================================
 # ADD TRANSACTION
-# =================================
+# =========================================================
 
 elif page == "Add Transaction":
 
-    st.title("➕ Add Transaction")
-
-    st.write(
-        "Record your income or expense."
+    st.markdown(
+        '<div class="page-eyebrow">Transactions</div>',
+        unsafe_allow_html=True
     )
 
-    st.divider()
+    st.title("Add Transaction")
 
-    # ---------------------------------
-    # Transaction Form
-    # ---------------------------------
-
-    transaction_type = st.radio(
-        "Transaction Type",
-        [
-            "Income",
-            "Expense"
-        ],
-        horizontal=True
+    st.markdown(
+        """
+        <div class="page-description">
+            Record an income or expense and keep your financial history up to date.
+        </div>
+        """,
+        unsafe_allow_html=True
     )
 
-    st.divider()
+    # Center the form
+    left_space, form_col, right_space = st.columns(
+        [1, 2, 1]
+    )
 
-    # ---------------------------------
-    # Income Form
-    # ---------------------------------
+    with form_col:
 
-    if transaction_type == "Income":
-
-        st.subheader("💰 Income Details")
-
-        source = st.selectbox(
-            "Income Source",
-            [
-                "Salary",
-                "Freelance",
-                "Business",
-                "Investment",
-                "Other"
-            ]
+        st.markdown(
+            '<div class="content-card">',
+            unsafe_allow_html=True
         )
+
+        transaction_type = st.radio(
+            "Transaction type",
+            [
+                "Income",
+                "Expense"
+            ],
+            horizontal=True
+        )
+
+        st.write("")
+
+        if transaction_type == "Income":
+
+            source = st.selectbox(
+                "Income source",
+                [
+                    "Salary",
+                    "Freelance",
+                    "Business",
+                    "Investment",
+                    "Other"
+                ]
+            )
+
+        else:
+
+            source = st.selectbox(
+                "Expense category",
+                [
+                    "Food",
+                    "Rent",
+                    "Travel",
+                    "Shopping",
+                    "Bills",
+                    "Entertainment",
+                    "Healthcare",
+                    "Education",
+                    "Other"
+                ]
+            )
 
         amount = st.number_input(
             "Amount",
@@ -344,132 +983,117 @@ elif page == "Add Transaction":
         )
 
         description = st.text_input(
-            "Description (optional)",
-            placeholder="Example: September salary"
+            "Description",
+            placeholder="Optional note about this transaction"
         )
 
-        if st.button(
-            "💾 Save Income",
-            type="primary"
-        ):
+        st.write("")
+
+        if transaction_type == "Income":
+
+            save_button = st.button(
+                "Save Income",
+                type="primary",
+                use_container_width=True
+            )
+
+        else:
+
+            save_button = st.button(
+                "Save Expense",
+                type="primary",
+                use_container_width=True
+            )
+
+        if save_button:
 
             if amount <= 0:
 
                 st.error(
-                    "Please enter an amount greater than 0."
+                    "Please enter an amount greater than zero."
                 )
 
             else:
 
-                save_income(
-                    source,
-                    amount,
+                formatted_date = (
                     transaction_date.strftime(
                         "%Y-%m-%d"
                     )
                 )
 
-                st.success(
-                    "Income saved successfully! 🎉"
-                )
+                if transaction_type == "Income":
 
-                st.rerun()
-
-    # ---------------------------------
-    # Expense Form
-    # ---------------------------------
-
-    else:
-
-        st.subheader("💸 Expense Details")
-
-        category = st.selectbox(
-            "Expense Category",
-            [
-                "Food",
-                "Rent",
-                "Travel",
-                "Shopping",
-                "Bills",
-                "Entertainment",
-                "Healthcare",
-                "Education",
-                "Other"
-            ]
-        )
-
-        amount = st.number_input(
-            "Amount",
-            min_value=0.0,
-            step=100.0,
-            format="%.2f"
-        )
-
-        transaction_date = st.date_input(
-            "Date",
-            value=date.today()
-        )
-
-        description = st.text_input(
-            "Description (optional)",
-            placeholder="Example: Lunch with friends"
-        )
-
-        if st.button(
-            "💾 Save Expense",
-            type="primary"
-        ):
-
-            if amount <= 0:
-
-                st.error(
-                    "Please enter an amount greater than 0."
-                )
-
-            else:
-
-                save_expense(
-                    category,
-                    amount,
-                    transaction_date.strftime(
-                        "%Y-%m-%d"
+                    save_income(
+                        source,
+                        amount,
+                        formatted_date
                     )
-                )
 
-                st.success(
-                    "Expense saved successfully! 🎉"
-                )
+                    st.success(
+                        "Income saved successfully."
+                    )
+
+                else:
+
+                    save_expense(
+                        source,
+                        amount,
+                        formatted_date
+                    )
+
+                    st.success(
+                        "Expense saved successfully."
+                    )
 
                 st.rerun()
 
+        st.markdown(
+            "</div>",
+            unsafe_allow_html=True
+        )
 
-# =================================
+    st.caption(
+        "Transactions are stored locally in your SQLite database."
+    )
+
+
+# =========================================================
 # HISTORY
-# =================================
+# =========================================================
 
 elif page == "History":
 
-    st.title("📅 Financial History")
-
-    st.write(
-        "View your monthly financial performance "
-        "and individual transactions."
+    st.markdown(
+        '<div class="page-eyebrow">Records</div>',
+        unsafe_allow_html=True
     )
 
-    st.divider()
+    st.title("Financial History")
 
-    # ---------------------------------
-    # Monthly History
-    # ---------------------------------
-
-    st.subheader("📊 Monthly Summary")
+    st.markdown(
+        """
+        <div class="page-description">
+            Review your monthly financial performance and transaction history.
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
 
     history = get_monthly_history()
+
+    # -----------------------------------------
+    # Monthly Summary
+    # -----------------------------------------
+
+    st.markdown(
+        '<div class="section-label">Monthly Summary</div>',
+        unsafe_allow_html=True
+    )
 
     if len(history) == 0:
 
         st.info(
-            "No financial history available yet."
+            "No monthly financial history available yet."
         )
 
     else:
@@ -485,7 +1109,7 @@ elif page == "History":
                     "Expenses": item["expenses"],
                     "Balance": item["balance"],
                     "Savings Rate": (
-                        f'{item["savings_rate"]:.2f}%'
+                        f'{item["savings_rate"]:.1f}%'
                     )
                 }
             )
@@ -497,39 +1121,60 @@ elif page == "History":
         st.dataframe(
             history_df,
             use_container_width=True,
-            hide_index=True
+            hide_index=True,
+            column_config={
+                "Income": st.column_config.NumberColumn(
+                    "Income",
+                    format="₹%.2f"
+                ),
+                "Expenses": st.column_config.NumberColumn(
+                    "Expenses",
+                    format="₹%.2f"
+                ),
+                "Balance": st.column_config.NumberColumn(
+                    "Balance",
+                    format="₹%.2f"
+                )
+            }
         )
 
-        st.subheader(
-            "📈 Monthly Income vs Expenses"
+        st.markdown(
+            '<div class="section-label">Monthly Income vs Expenses</div>',
+            unsafe_allow_html=True
         )
 
         chart_df = pd.DataFrame(
             {
                 "Income": [
                     item["income"]
-                    for item in history
+                    for item in reversed(history)
                 ],
                 "Expenses": [
                     item["expenses"]
-                    for item in history
+                    for item in reversed(history)
                 ]
             },
             index=[
                 item["month"]
-                for item in history
+                for item in reversed(history)
             ]
         )
 
-        st.bar_chart(chart_df)
+        st.line_chart(
+            chart_df,
+            height=350
+        )
 
     st.divider()
 
-    # ---------------------------------
+    # -----------------------------------------
     # Transaction History
-    # ---------------------------------
+    # -----------------------------------------
 
-    st.subheader("🧾 Transaction History")
+    st.markdown(
+        '<div class="section-label">Transaction History</div>',
+        unsafe_allow_html=True
+    )
 
     income_rows = get_all_income()
     expense_rows = get_all_expenses()
@@ -540,7 +1185,6 @@ elif page == "History":
 
         transactions.append(
             {
-                "ID": row[0],
                 "Date": row[3],
                 "Type": "Income",
                 "Category / Source": row[1],
@@ -552,7 +1196,6 @@ elif page == "History":
 
         transactions.append(
             {
-                "ID": row[0],
                 "Date": row[3],
                 "Type": "Expense",
                 "Category / Source": row[1],
@@ -580,19 +1223,28 @@ elif page == "History":
         st.dataframe(
             transaction_df,
             use_container_width=True,
-            hide_index=True
+            hide_index=True,
+            column_config={
+                "Amount": st.column_config.NumberColumn(
+                    "Amount",
+                    format="₹%.2f"
+                )
+            }
         )
 
     st.divider()
 
-    # ---------------------------------
-    # Delete Transactions
-    # ---------------------------------
+    # -----------------------------------------
+    # Delete Transaction
+    # -----------------------------------------
 
-    st.subheader("🗑️ Delete Transaction")
+    st.markdown(
+        '<div class="section-label">Manage Transactions</div>',
+        unsafe_allow_html=True
+    )
 
     delete_type = st.selectbox(
-        "Select transaction type",
+        "Transaction type",
         [
             "Income",
             "Expense"
@@ -610,7 +1262,7 @@ elif page == "History":
     if len(delete_options) == 0:
 
         st.info(
-            "No transactions available to delete."
+            "No transactions available for this type."
         )
 
     else:
@@ -624,7 +1276,7 @@ elif page == "History":
             ] = row[0]
 
         selected_transaction = st.selectbox(
-            "Select transaction",
+            "Select transaction to remove",
             list(delete_labels.keys())
         )
 
@@ -655,25 +1307,33 @@ elif page == "History":
             st.rerun()
 
 
-# =================================
+# =========================================================
 # SPENDING ANALYSIS
-# =================================
+# =========================================================
 
 elif page == "Spending Analysis":
 
-    st.title("📊 Spending Analysis")
-
-    st.write(
-        "Understand where your money is going."
+    st.markdown(
+        '<div class="page-eyebrow">Analytics</div>',
+        unsafe_allow_html=True
     )
 
-    st.divider()
+    st.title("Spending Analysis")
+
+    st.markdown(
+        """
+        <div class="page-description">
+            Understand your spending patterns and identify the categories
+            that have the biggest impact on your finances.
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
 
     if len(expenses) == 0:
 
         st.info(
-            "Add some expenses to see your "
-            "spending analysis."
+            "Add expenses to generate your spending analysis."
         )
 
     else:
@@ -691,109 +1351,227 @@ elif page == "Spending Analysis":
             )
         )
 
-        # ---------------------------------
-        # Spending Metrics
-        # ---------------------------------
+        highest_category = max(
+            category_totals,
+            key=category_totals.get
+        )
 
-        col1, col2 = st.columns(2)
+        highest_amount = (
+            category_totals[
+                highest_category
+            ]
+        )
+
+        highest_percentage = (
+            category_percentages[
+                highest_category
+            ]
+        )
+
+        # -----------------------------------------
+        # KPI Cards
+        # -----------------------------------------
+
+        col1, col2, col3 = st.columns(3)
 
         with col1:
 
-            st.metric(
-                "Total Spending",
-                f"₹{total_expenses:,.2f}"
+            st.markdown(
+                f"""
+                <div class="metric-card">
+                    <div class="metric-label">
+                        Total Spending
+                    </div>
+
+                    <div class="metric-value">
+                        ₹{total_expenses:,.0f}
+                    </div>
+
+                    <div class="metric-small">
+                        All recorded expenses
+                    </div>
+                </div>
+                """,
+                unsafe_allow_html=True
             )
 
         with col2:
 
-            highest_category = max(
-                category_totals,
-                key=category_totals.get
+            st.markdown(
+                f"""
+                <div class="metric-card">
+                    <div class="metric-label">
+                        Largest Category
+                    </div>
+
+                    <div class="metric-value">
+                        {highest_category}
+                    </div>
+
+                    <div class="metric-small">
+                        ₹{highest_amount:,.0f}
+                    </div>
+                </div>
+                """,
+                unsafe_allow_html=True
             )
 
-            highest_amount = (
-                category_totals[
-                    highest_category
-                ]
+        with col3:
+
+            st.markdown(
+                f"""
+                <div class="metric-card">
+                    <div class="metric-label">
+                        Category Share
+                    </div>
+
+                    <div class="metric-value">
+                        {highest_percentage:.1f}%
+                    </div>
+
+                    <div class="metric-small">
+                        Of total spending
+                    </div>
+                </div>
+                """,
+                unsafe_allow_html=True
             )
 
-            st.metric(
-                "Highest Spending",
-                highest_category,
-                f"₹{highest_amount:,.2f}"
+        st.write("")
+
+        # -----------------------------------------
+        # Charts
+        # -----------------------------------------
+
+        col1, col2 = st.columns([1.4, 1])
+
+        with col1:
+
+            st.markdown(
+                '<div class="section-label">Spending by Category</div>',
+                unsafe_allow_html=True
+            )
+
+            spending_df = pd.DataFrame(
+                {
+                    "Amount": category_totals
+                }
+            )
+
+            st.bar_chart(
+                spending_df,
+                height=360
+            )
+
+        with col2:
+
+            st.markdown(
+                '<div class="section-label">Category Distribution</div>',
+                unsafe_allow_html=True
+            )
+
+            breakdown_df = pd.DataFrame(
+                {
+                    "Category": list(
+                        category_percentages.keys()
+                    ),
+                    "Share": list(
+                        category_percentages.values()
+                    )
+                }
+            )
+
+            breakdown_df = breakdown_df.sort_values(
+                "Share",
+                ascending=False
+            )
+
+            st.dataframe(
+                breakdown_df,
+                use_container_width=True,
+                hide_index=True,
+                column_config={
+                    "Share": st.column_config.ProgressColumn(
+                        "Share",
+                        format="%.1f%%",
+                        min_value=0,
+                        max_value=100
+                    )
+                }
             )
 
         st.divider()
 
-        # ---------------------------------
-        # Category Chart
-        # ---------------------------------
+        # -----------------------------------------
+        # Spending Insight
+        # -----------------------------------------
 
-        st.subheader(
-            "💸 Spending By Category"
-        )
+        if highest_percentage >= 50:
 
-        spending_df = pd.DataFrame(
-            {
-                "Category": list(
-                    category_totals.keys()
-                ),
-                "Amount": list(
-                    category_totals.values()
-                )
-            }
-        )
-
-        st.bar_chart(
-            spending_df.set_index(
-                "Category"
-            )
-        )
-
-        st.divider()
-
-        # ---------------------------------
-        # Spending Breakdown
-        # ---------------------------------
-
-        st.subheader(
-            "📋 Spending Breakdown"
-        )
-
-        for category, amount in (
-            category_totals.items()
-        ):
-
-            percentage = (
-                category_percentages[
-                    category
-                ]
+            insight = (
+                f"{highest_category} represents "
+                f"{highest_percentage:.1f}% of your spending. "
+                "This category is worth reviewing for possible "
+                "savings opportunities."
             )
 
-            st.write(
-                f"**{category}** — "
-                f"₹{amount:,.2f} "
-                f"({percentage:.2f}%)"
+        elif highest_percentage >= 30:
+
+            insight = (
+                f"{highest_category} is your largest spending "
+                f"category at {highest_percentage:.1f}%. "
+                "Keep monitoring this category."
             )
 
-            st.progress(
-                min(
-                    percentage / 100,
-                    1.0
-                )
+        else:
+
+            insight = (
+                "Your spending is relatively distributed "
+                "across multiple categories."
             )
 
+        st.markdown(
+            f"""
+            <div class="insight-card">
 
-# =================================
+                <div class="insight-label">
+                    Spending Insight
+                </div>
+
+                <div class="insight-text">
+                    {insight}
+                </div>
+
+            </div>
+            """,
+            unsafe_allow_html=True
+        )
+
+
+# =========================================================
 # CALCULATORS
-# =================================
+# =========================================================
 
 elif page == "Calculators":
 
-    st.title("🧮 Financial Calculators")
+    st.markdown(
+        '<div class="page-eyebrow">Financial tools</div>',
+        unsafe_allow_html=True
+    )
+
+    st.title("Financial Calculators")
+
+    st.markdown(
+        """
+        <div class="page-description">
+            Calculate interest, SIP returns and loan payments.
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
 
     calculator = st.selectbox(
-        "Choose a calculator",
+        "Select calculator",
         [
             "Simple Interest",
             "Compound Interest",
@@ -804,36 +1582,41 @@ elif page == "Calculators":
 
     st.divider()
 
-    # ---------------------------------
+    # -----------------------------------------
     # Simple Interest
-    # ---------------------------------
+    # -----------------------------------------
 
     if calculator == "Simple Interest":
 
-        st.subheader(
-            "Simple Interest Calculator"
-        )
+        st.subheader("Simple Interest")
 
-        principal = st.number_input(
-            "Principal Amount",
-            min_value=0.0,
-            step=1000.0
-        )
+        col1, col2 = st.columns(2)
 
-        rate = st.number_input(
-            "Annual Interest Rate (%)",
-            min_value=0.0,
-            step=0.5
-        )
+        with col1:
 
-        years = st.number_input(
-            "Time (Years)",
-            min_value=0.1,
-            step=1.0
-        )
+            principal = st.number_input(
+                "Principal amount",
+                min_value=0.0,
+                step=1000.0
+            )
+
+            rate = st.number_input(
+                "Annual interest rate (%)",
+                min_value=0.0,
+                step=0.5
+            )
+
+        with col2:
+
+            years = st.number_input(
+                "Time in years",
+                min_value=0.1,
+                step=1.0
+            )
 
         if st.button(
-            "Calculate Simple Interest"
+            "Calculate",
+            type="primary"
         ):
 
             interest, amount = (
@@ -844,50 +1627,63 @@ elif page == "Calculators":
                 )
             )
 
-            st.success(
-                f"Interest: ₹{interest:,.2f}"
-            )
+            col1, col2 = st.columns(2)
 
-            st.info(
-                f"Total Amount: ₹{amount:,.2f}"
-            )
+            with col1:
 
-    # ---------------------------------
+                st.metric(
+                    "Interest",
+                    f"₹{interest:,.2f}"
+                )
+
+            with col2:
+
+                st.metric(
+                    "Total Amount",
+                    f"₹{amount:,.2f}"
+                )
+
+    # -----------------------------------------
     # Compound Interest
-    # ---------------------------------
+    # -----------------------------------------
 
     elif calculator == "Compound Interest":
 
-        st.subheader(
-            "Compound Interest Calculator"
-        )
+        st.subheader("Compound Interest")
 
-        principal = st.number_input(
-            "Principal Amount",
-            min_value=0.0,
-            step=1000.0
-        )
+        col1, col2 = st.columns(2)
 
-        rate = st.number_input(
-            "Annual Interest Rate (%)",
-            min_value=0.0,
-            step=0.5
-        )
+        with col1:
 
-        years = st.number_input(
-            "Time (Years)",
-            min_value=0.1,
-            step=1.0
-        )
+            principal = st.number_input(
+                "Principal amount",
+                min_value=0.0,
+                step=1000.0
+            )
 
-        compounds = st.number_input(
-            "Compounds Per Year",
-            min_value=1,
-            step=1
-        )
+            rate = st.number_input(
+                "Annual interest rate (%)",
+                min_value=0.0,
+                step=0.5
+            )
+
+        with col2:
+
+            years = st.number_input(
+                "Time in years",
+                min_value=0.1,
+                step=1.0
+            )
+
+            compounds = st.number_input(
+                "Compounds per year",
+                min_value=1,
+                step=1
+            )
 
         if st.button(
-            "Calculate Compound Interest"
+            "Calculate",
+            type="primary"
         ):
 
             interest, amount = (
@@ -899,44 +1695,57 @@ elif page == "Calculators":
                 )
             )
 
-            st.success(
-                f"Interest: ₹{interest:,.2f}"
-            )
+            col1, col2 = st.columns(2)
 
-            st.info(
-                f"Total Amount: ₹{amount:,.2f}"
-            )
+            with col1:
 
-    # ---------------------------------
+                st.metric(
+                    "Interest",
+                    f"₹{interest:,.2f}"
+                )
+
+            with col2:
+
+                st.metric(
+                    "Total Amount",
+                    f"₹{amount:,.2f}"
+                )
+
+    # -----------------------------------------
     # SIP
-    # ---------------------------------
+    # -----------------------------------------
 
     elif calculator == "SIP Calculator":
 
-        st.subheader(
-            "SIP Calculator"
-        )
+        st.subheader("SIP Calculator")
 
-        monthly_investment = st.number_input(
-            "Monthly Investment",
-            min_value=0.0,
-            step=500.0
-        )
+        col1, col2 = st.columns(2)
 
-        annual_rate = st.number_input(
-            "Expected Annual Return (%)",
-            min_value=0.0,
-            step=0.5
-        )
+        with col1:
 
-        years = st.number_input(
-            "Investment Period (Years)",
-            min_value=0.1,
-            step=1.0
-        )
+            monthly_investment = st.number_input(
+                "Monthly investment",
+                min_value=0.0,
+                step=500.0
+            )
+
+            annual_rate = st.number_input(
+                "Expected annual return (%)",
+                min_value=0.0,
+                step=0.5
+            )
+
+        with col2:
+
+            years = st.number_input(
+                "Investment period",
+                min_value=0.1,
+                step=1.0
+            )
 
         if st.button(
-            "Calculate SIP"
+            "Calculate",
+            type="primary"
         ):
 
             (
@@ -949,51 +1758,64 @@ elif page == "Calculators":
                 years
             )
 
-            st.success(
-                f"Total Invested: "
-                f"₹{total_invested:,.2f}"
-            )
+            col1, col2, col3 = st.columns(3)
 
-            st.info(
-                f"Estimated Returns: "
-                f"₹{estimated_returns:,.2f}"
-            )
+            with col1:
 
-            st.metric(
-                "Estimated Final Value",
-                f"₹{final_value:,.2f}"
-            )
+                st.metric(
+                    "Total Invested",
+                    f"₹{total_invested:,.2f}"
+                )
 
-    # ---------------------------------
+            with col2:
+
+                st.metric(
+                    "Estimated Returns",
+                    f"₹{estimated_returns:,.2f}"
+                )
+
+            with col3:
+
+                st.metric(
+                    "Estimated Value",
+                    f"₹{final_value:,.2f}"
+                )
+
+    # -----------------------------------------
     # EMI
-    # ---------------------------------
+    # -----------------------------------------
 
     elif calculator == "EMI Calculator":
 
-        st.subheader(
-            "EMI Calculator"
-        )
+        st.subheader("EMI Calculator")
 
-        principal = st.number_input(
-            "Loan Amount",
-            min_value=0.0,
-            step=5000.0
-        )
+        col1, col2 = st.columns(2)
 
-        annual_rate = st.number_input(
-            "Annual Interest Rate (%)",
-            min_value=0.0,
-            step=0.5
-        )
+        with col1:
 
-        years = st.number_input(
-            "Loan Period (Years)",
-            min_value=0.1,
-            step=1.0
-        )
+            principal = st.number_input(
+                "Loan amount",
+                min_value=0.0,
+                step=5000.0
+            )
+
+            annual_rate = st.number_input(
+                "Annual interest rate (%)",
+                min_value=0.0,
+                step=0.5
+            )
+
+        with col2:
+
+            years = st.number_input(
+                "Loan period",
+                min_value=0.1,
+                step=1.0
+            )
 
         if st.button(
-            "Calculate EMI"
+            "Calculate",
+            type="primary"
         ):
 
             (
@@ -1006,105 +1828,151 @@ elif page == "Calculators":
                 years
             )
 
-            st.metric(
-                "Monthly EMI",
-                f"₹{emi:,.2f}"
-            )
+            col1, col2, col3 = st.columns(3)
 
-            st.info(
-                f"Total Interest: "
-                f"₹{total_interest:,.2f}"
-            )
+            with col1:
 
-            st.info(
-                f"Total Payment: "
-                f"₹{total_payment:,.2f}"
-            )
+                st.metric(
+                    "Monthly EMI",
+                    f"₹{emi:,.2f}"
+                )
+
+            with col2:
+
+                st.metric(
+                    "Total Interest",
+                    f"₹{total_interest:,.2f}"
+                )
+
+            with col3:
+
+                st.metric(
+                    "Total Payment",
+                    f"₹{total_payment:,.2f}"
+                )
 
 
-# =================================
+# =========================================================
 # AI FINANCIAL ADVISOR
-# =================================
+# =========================================================
 
 elif page == "AI Financial Advisor":
 
-    st.title("🤖 AI Financial Advisor")
-
-    st.write(
-        "Get AI-powered financial guidance "
-        "based on your income and spending."
+    st.markdown(
+        '<div class="page-eyebrow">Artificial intelligence</div>',
+        unsafe_allow_html=True
     )
 
-    st.divider()
+    st.title("AI Financial Advisor")
 
-    # ---------------------------------
-    # Financial Information
-    # ---------------------------------
+    st.markdown(
+        """
+        <div class="page-description">
+            Generate personalized financial insights using your recorded
+            income and spending data.
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
 
-    col1, col2 = st.columns(2)
+    # -----------------------------------------
+    # Financial Snapshot
+    # -----------------------------------------
+
+    st.markdown(
+        '<div class="section-label">Financial Snapshot</div>',
+        unsafe_allow_html=True
+    )
+
+    col1, col2, col3, col4 = st.columns(4)
 
     with col1:
 
-        st.write(
-            f"**Total Income:** "
-            f"₹{total_income:,.2f}"
-        )
-
-        st.write(
-            f"**Total Expenses:** "
-            f"₹{total_expenses:,.2f}"
-        )
-
-        st.write(
-            f"**Remaining Balance:** "
-            f"₹{remaining_balance:,.2f}"
+        st.metric(
+            "Income",
+            f"₹{total_income:,.0f}"
         )
 
     with col2:
 
-        st.write(
-            f"**Savings Rate:** "
-            f"{savings_percentage:.2f}%"
+        st.metric(
+            "Expenses",
+            f"₹{total_expenses:,.0f}"
         )
 
-        (
-            highest_category,
-            highest_amount
-        ) = find_highest_spending_category(
-            expenses
+    with col3:
+
+        st.metric(
+            "Balance",
+            f"₹{balance:,.0f}"
         )
 
-        if highest_category is not None:
+    with col4:
 
-            st.write(
-                f"**Highest Spending:** "
-                f"{highest_category} "
-                f"(₹{highest_amount:,.2f})"
-            )
-
-        else:
-
-            st.write(
-                "**Highest Spending:** "
-                "No expenses recorded"
-            )
+        st.metric(
+            "Savings Rate",
+            f"{savings_rate:.1f}%"
+        )
 
     st.divider()
 
-    # ---------------------------------
-    # Generate AI Advice
-    # ---------------------------------
+    (
+        highest_category,
+        highest_amount
+    ) = find_highest_spending_category(
+        expenses
+    )
+
+    if highest_category is not None:
+
+        st.markdown(
+            f"""
+            <div class="content-card">
+
+                <div class="card-title">
+                    Current Spending Focus
+                </div>
+
+                <div class="card-subtitle">
+                    Highest recorded expense category
+                </div>
+
+                <div style="
+                    font-size:1.5rem;
+                    font-weight:700;
+                    color:#f0f3f6;
+                ">
+                    {highest_category}
+                </div>
+
+                <div style="
+                    color:#8b97a5;
+                    margin-top:0.35rem;
+                ">
+                    ₹{highest_amount:,.2f}
+                </div>
+
+            </div>
+            """,
+            unsafe_allow_html=True
+        )
+
+    st.write("")
+
+    # -----------------------------------------
+    # AI Button
+    # -----------------------------------------
 
     if st.button(
-        "🤖 Generate AI Financial Advice",
-        type="primary"
+        "Generate Financial Analysis",
+        type="primary",
+        use_container_width=True
     ):
 
         if total_income == 0 and total_expenses == 0:
 
             st.warning(
-                "Please add income and expenses "
-                "before generating AI advice."
+                "Add some income and expenses before generating AI analysis."
             )
 
         else:
@@ -1112,14 +1980,14 @@ elif page == "AI Financial Advisor":
             prompt = create_financial_prompt(
                 total_income,
                 total_expenses,
-                remaining_balance,
-                savings_percentage,
+                balance,
+                savings_rate,
                 highest_category,
                 highest_amount
             )
 
             with st.spinner(
-                "Gemini is analyzing your financial data..."
+                "Analyzing your financial data..."
             ):
 
                 try:
@@ -1129,24 +1997,29 @@ elif page == "AI Financial Advisor":
                     )
 
                     st.success(
-                        "AI financial analysis completed!"
+                        "Financial analysis completed."
                     )
 
-                    st.subheader(
-                        "💡 AI Financial Advice"
+                    st.markdown(
+                        '<div class="section-label">AI Analysis</div>',
+                        unsafe_allow_html=True
                     )
 
-                    st.write(advice)
+                    st.markdown(
+                        f"""
+                        <div class="insight-card">
+                            <div class="insight-text">
+                                {advice}
+                            </div>
+                        </div>
+                        """,
+                        unsafe_allow_html=True
+                    )
 
                 except Exception as error:
 
                     st.error(
-                        "Unable to generate AI advice."
-                    )
-
-                    st.write(
-                        "Gemini is currently unavailable. "
-                        "Please try again later."
+                        "Unable to generate AI analysis at the moment."
                     )
 
                     st.caption(
