@@ -23,6 +23,10 @@ from financial_insights import (
     generate_financial_insights
 )
 
+from financial_health import (
+    calculate_financial_health_score
+)
+
 from ai_advisor import (
     create_financial_prompt,
     get_ai_financial_advice
@@ -59,10 +63,6 @@ st.markdown(
     """
     <style>
 
-    /* =====================================================
-       GLOBAL
-       ===================================================== */
-
     .stApp {
         background:
             radial-gradient(
@@ -76,7 +76,6 @@ st.markdown(
                 transparent 25%
             ),
             #080d19;
-
         color: #f8fafc;
     }
 
@@ -86,10 +85,6 @@ st.markdown(
         padding-bottom: 4rem;
     }
 
-    /* =====================================================
-       SIDEBAR
-       ===================================================== */
-
     section[data-testid="stSidebar"] {
         background:
             linear-gradient(
@@ -97,7 +92,6 @@ st.markdown(
                 #0c1324 0%,
                 #080d19 100%
             );
-
         border-right: 1px solid #1c2940;
     }
 
@@ -108,10 +102,6 @@ st.markdown(
     section[data-testid="stSidebar"] .stRadio label {
         font-weight: 500;
     }
-
-    /* =====================================================
-       TYPOGRAPHY
-       ===================================================== */
 
     .main-title {
         font-size: 2.35rem;
@@ -135,10 +125,6 @@ st.markdown(
         margin-top: 30px;
         margin-bottom: 14px;
     }
-
-    /* =====================================================
-       HERO / WELCOME CARD
-       ===================================================== */
 
     .welcome-card {
         position: relative;
@@ -223,10 +209,6 @@ st.markdown(
         max-width: 800px;
     }
 
-    /* =====================================================
-       KPI CARDS
-       ===================================================== */
-
     .metric-card {
         background:
             linear-gradient(
@@ -259,9 +241,7 @@ st.markdown(
         color: #8292aa;
         font-size: 0.74rem;
         font-weight: 700;
-
         letter-spacing: 0.8px;
-
         margin-bottom: 10px;
     }
 
@@ -293,10 +273,6 @@ st.markdown(
         color: #a78bfa;
     }
 
-    /* =====================================================
-       HEALTH
-       ===================================================== */
-
     .health-card {
         background:
             linear-gradient(
@@ -326,9 +302,12 @@ st.markdown(
         font-weight: 700;
     }
 
-    /* =====================================================
-       INSIGHTS
-       ===================================================== */
+    .health-description {
+        color: #8fa0b8;
+        font-size: 0.82rem;
+        line-height: 1.5;
+        margin-top: 9px;
+    }
 
     .insight-card {
         background:
@@ -375,10 +354,6 @@ st.markdown(
         margin-bottom: 11px;
     }
 
-    /* =====================================================
-       TREND CARDS
-       ===================================================== */
-
     .trend-card {
         background:
             linear-gradient(
@@ -409,21 +384,6 @@ st.markdown(
         margin: 6px 0 3px;
     }
 
-    /* =====================================================
-       CHART CONTAINER
-       ===================================================== */
-
-    .chart-header {
-        font-size: 0.95rem;
-        font-weight: 750;
-        color: #dce5f2;
-        margin-bottom: 3px;
-    }
-
-    /* =====================================================
-       BUTTONS
-       ===================================================== */
-
     .stButton > button {
         border-radius: 11px;
 
@@ -453,10 +413,6 @@ st.markdown(
         color: #ffffff;
     }
 
-    /* =====================================================
-       INPUTS
-       ===================================================== */
-
     div[data-baseweb="select"] > div {
         background-color: #111a2b;
         border-color: #263650;
@@ -474,36 +430,20 @@ st.markdown(
         border-color: #263650 !important;
     }
 
-    /* =====================================================
-       DATAFRAME
-       ===================================================== */
-
     div[data-testid="stDataFrame"] {
         border: 1px solid #22304a;
         border-radius: 15px;
         overflow: hidden;
     }
 
-    /* =====================================================
-       STREAMLIT ALERTS
-       ===================================================== */
-
     div[data-testid="stAlert"] {
         border-radius: 13px;
     }
-
-    /* =====================================================
-       PROGRESS
-       ===================================================== */
 
     div[data-testid="stProgressBar"] {
         margin-top: 12px;
         margin-bottom: 10px;
     }
-
-    /* =====================================================
-       HIDE STREAMLIT DEFAULT ELEMENTS
-       ===================================================== */
 
     #MainMenu {
         visibility: hidden;
@@ -599,10 +539,7 @@ def calculate_totals(incomes, expenses):
         for item in expenses
     )
 
-    balance = (
-        total_income -
-        total_expenses
-    )
+    balance = total_income - total_expenses
 
     if total_income > 0:
 
@@ -623,74 +560,12 @@ def calculate_totals(incomes, expenses):
     )
 
 
-def calculate_health_score(
-    savings_rate,
-    expense_ratio
-):
-
-    score = 50
-
-    if savings_rate >= 40:
-
-        score += 30
-
-    elif savings_rate >= 30:
-
-        score += 20
-
-    elif savings_rate >= 20:
-
-        score += 10
-
-    elif savings_rate < 0:
-
-        score -= 30
-
-    if expense_ratio <= 50:
-
-        score += 20
-
-    elif expense_ratio <= 70:
-
-        score += 10
-
-    elif expense_ratio > 90:
-
-        score -= 20
-
-    return max(
-        0,
-        min(100, score)
-    )
-
-
-def get_health_label(score):
-
-    if score >= 80:
-        return "Excellent"
-
-    elif score >= 65:
-        return "Healthy"
-
-    elif score >= 50:
-        return "Moderate"
-
-    elif score >= 30:
-        return "Needs Attention"
-
-    else:
-        return "Critical"
-
-
 def format_currency(value):
 
     return f"₹{value:,.2f}"
 
 
-def filter_by_month(
-    records,
-    selected_month
-):
+def filter_by_month(records, selected_month):
 
     if selected_month == "All Time":
 
@@ -700,9 +575,7 @@ def filter_by_month(
 
     for record in records:
 
-        record_date = record.get(
-            "date"
-        )
+        record_date = record.get("date")
 
         if record_date:
 
@@ -713,18 +586,13 @@ def filter_by_month(
     return filtered
 
 
-def get_available_months(
-    incomes,
-    expenses
-):
+def get_available_months(incomes, expenses):
 
     months = set()
 
     for record in incomes + expenses:
 
-        record_date = record.get(
-            "date"
-        )
+        record_date = record.get("date")
 
         if record_date:
 
@@ -757,9 +625,7 @@ def month_display(month):
         return month
 
 
-def get_previous_month(
-    selected_month
-):
+def get_previous_month(selected_month):
 
     if selected_month == "All Time":
 
@@ -882,9 +748,7 @@ def create_financial_chart(
     return fig
 
 
-def create_spending_chart(
-    expenses
-):
+def create_spending_chart(expenses):
 
     category_totals = (
         calculate_category_totals(
@@ -965,9 +829,9 @@ def create_trend_chart(
                     "Expenses": 0
                 }
 
-            monthly_data[month][
-                "Income"
-            ] += income["amount"]
+            monthly_data[month]["Income"] += (
+                income["amount"]
+            )
 
     for expense in expenses:
 
@@ -987,9 +851,9 @@ def create_trend_chart(
                     "Expenses": 0
                 }
 
-            monthly_data[month][
-                "Expenses"
-            ] += expense["amount"]
+            monthly_data[month]["Expenses"] += (
+                expense["amount"]
+            )
 
     if not monthly_data:
 
@@ -997,29 +861,17 @@ def create_trend_chart(
 
     rows = []
 
-    for month in sorted(
-        monthly_data
-    ):
+    for month in sorted(monthly_data):
 
         rows.append(
             {
                 "Month": month,
-
-                "Income":
-                    monthly_data[month][
-                        "Income"
-                    ],
-
-                "Expenses":
-                    monthly_data[month][
-                        "Expenses"
-                    ]
+                "Income": monthly_data[month]["Income"],
+                "Expenses": monthly_data[month]["Expenses"]
             }
         )
 
-    data = pd.DataFrame(
-        rows
-    )
+    data = pd.DataFrame(rows)
 
     fig = go.Figure()
 
@@ -1081,11 +933,9 @@ incomes = load_income()
 
 expenses = load_expenses()
 
-available_months = (
-    get_available_months(
-        incomes,
-        expenses
-    )
+available_months = get_available_months(
+    incomes,
+    expenses
 )
 
 
@@ -1177,10 +1027,6 @@ if page == "Dashboard":
         '</div>',
         unsafe_allow_html=True
     )
-
-    # -----------------------------------------------------
-    # MONTH SELECTOR
-    # -----------------------------------------------------
 
     month_options = (
         ["All Time"] +
@@ -1298,10 +1144,7 @@ if page == "Dashboard":
                     TOTAL INCOME
                 </div>
 
-                <div class="
-                    metric-value
-                    metric-positive
-                ">
+                <div class="metric-value metric-positive">
                     {format_currency(total_income)}
                 </div>
 
@@ -1324,10 +1167,7 @@ if page == "Dashboard":
                     TOTAL EXPENSES
                 </div>
 
-                <div class="
-                    metric-value
-                    metric-negative
-                ">
+                <div class="metric-value metric-negative">
                     {format_currency(total_expenses)}
                 </div>
 
@@ -1356,10 +1196,7 @@ if page == "Dashboard":
                     REMAINING BALANCE
                 </div>
 
-                <div class="
-                    metric-value
-                    {balance_class}
-                ">
+                <div class="metric-value {balance_class}">
                     {format_currency(balance)}
                 </div>
 
@@ -1382,10 +1219,7 @@ if page == "Dashboard":
                     SAVINGS RATE
                 </div>
 
-                <div class="
-                    metric-value
-                    metric-purple
-                ">
+                <div class="metric-value metric-purple">
                     {savings_rate:.1f}%
                 </div>
 
@@ -1402,13 +1236,12 @@ if page == "Dashboard":
     # FINANCIAL HEALTH
     # -----------------------------------------------------
 
-    health_score = calculate_health_score(
-        savings_rate,
-        expense_ratio
-    )
-
-    health_label = get_health_label(
-        health_score
+    health_score, health_label = (
+        calculate_financial_health_score(
+            total_income,
+            total_expenses,
+            savings_rate
+        )
     )
 
     st.markdown(
@@ -1445,6 +1278,11 @@ if page == "Dashboard":
                     {health_label}
                 </div>
 
+                <div class="health-description">
+                    Based on your savings performance,
+                    spending level and remaining balance.
+                </div>
+
             </div>
             """,
             unsafe_allow_html=True
@@ -1457,29 +1295,43 @@ if page == "Dashboard":
         )
 
         st.caption(
-            "The score considers your savings rate "
-            "and spending level."
+            "Your score is calculated from the financial "
+            "data recorded in the application."
         )
 
-        if savings_rate >= 30:
+        if health_score >= 80:
 
             st.success(
-                "Strong savings performance. "
-                "Keep maintaining this habit."
+                "Your current financial indicators are strong. "
+                "Continue maintaining healthy savings and spending habits."
             )
 
-        elif savings_rate >= 0:
+        elif health_score >= 60:
 
             st.info(
-                "Your finances are positive, but there "
-                "is room to improve your savings rate."
+                "Your financial position is generally healthy, "
+                "with some room for improvement."
+            )
+
+        elif health_score >= 40:
+
+            st.warning(
+                "Your financial position is moderate. "
+                "Improving savings and controlling expenses could help."
+            )
+
+        elif health_score >= 20:
+
+            st.warning(
+                "Your finances need attention. "
+                "Review your spending and try to increase your savings."
             )
 
         else:
 
             st.error(
-                "Your current expenses are higher "
-                "than your income."
+                "Your current financial indicators are under pressure. "
+                "Consider reviewing expenses carefully."
             )
 
     # -----------------------------------------------------
@@ -1516,10 +1368,6 @@ if page == "Dashboard":
                 expenses=current_expenses
             )
         )
-
-        # -------------------------------------------------
-        # TREND CARDS
-        # -------------------------------------------------
 
         t1, t2, t3 = st.columns(3)
 
@@ -1628,10 +1476,6 @@ if page == "Dashboard":
                 unsafe_allow_html=True
             )
 
-        # -------------------------------------------------
-        # ALERTS
-        # -------------------------------------------------
-
         if intelligence["alerts"]:
 
             st.markdown(
@@ -1656,10 +1500,6 @@ if page == "Dashboard":
                     """,
                     unsafe_allow_html=True
                 )
-
-        # -------------------------------------------------
-        # INSIGHTS
-        # -------------------------------------------------
 
         if intelligence["insights"]:
 
@@ -2054,10 +1894,6 @@ elif page == "Add Transaction":
         value=date.today()
     )
 
-    description = st.text_input(
-        "Description (optional)"
-    )
-
     if st.button(
         "Save Transaction",
         use_container_width=True
@@ -2205,10 +2041,6 @@ elif page == "History":
             "No monthly history available yet."
         )
 
-    # -----------------------------------------------------
-    # TRANSACTION HISTORY
-    # -----------------------------------------------------
-
     st.markdown(
         "### Transaction History"
     )
@@ -2280,10 +2112,6 @@ elif page == "History":
         st.info(
             "No transactions recorded."
         )
-
-    # -----------------------------------------------------
-    # DELETE TRANSACTION
-    # -----------------------------------------------------
 
     st.markdown(
         "### Delete Transaction"
@@ -2606,10 +2434,6 @@ elif page == "Calculators":
         ]
     )
 
-    # -----------------------------------------------------
-    # SIMPLE INTEREST
-    # -----------------------------------------------------
-
     if calculator == "Simple Interest":
 
         st.subheader(
@@ -2665,10 +2489,6 @@ elif page == "Calculators":
                         amount
                     )
                 )
-
-    # -----------------------------------------------------
-    # COMPOUND INTEREST
-    # -----------------------------------------------------
 
     elif calculator == "Compound Interest":
 
@@ -2732,10 +2552,6 @@ elif page == "Calculators":
                         amount
                     )
                 )
-
-    # -----------------------------------------------------
-    # SIP
-    # -----------------------------------------------------
 
     elif calculator == "SIP":
 
@@ -2801,10 +2617,6 @@ elif page == "Calculators":
                         final_value
                     )
                 )
-
-    # -----------------------------------------------------
-    # EMI
-    # -----------------------------------------------------
 
     else:
 
@@ -2914,9 +2726,13 @@ elif page == "AI Financial Advisor":
         )
     )
 
-    # -----------------------------------------------------
-    # AI SNAPSHOT
-    # -----------------------------------------------------
+    health_score, health_label = (
+        calculate_financial_health_score(
+            total_income,
+            total_expenses,
+            savings_rate
+        )
+    )
 
     c1, c2, c3, c4 = st.columns(4)
 
@@ -3001,15 +2817,15 @@ elif page == "AI Financial Advisor":
             <div class="metric-card">
 
                 <div class="metric-label">
-                    EXPENSE RATIO
+                    FINANCIAL HEALTH
                 </div>
 
-                <div class="metric-value metric-blue">
-                    {expense_ratio:.1f}%
+                <div class="metric-value metric-positive">
+                    {health_score}/100
                 </div>
 
                 <div class="metric-subtitle">
-                    Expenses as a percentage of income
+                    {health_label}
                 </div>
 
             </div>
@@ -3055,18 +2871,16 @@ elif page == "AI Financial Advisor":
                 )
 
                 st.markdown(
-                    f"""
-                    <div class="insight-card">
+                    '<div class="insight-card">',
+                    unsafe_allow_html=True
+                )
 
-                        <div class="insight-text"
-                             style="font-size:1rem;">
+                st.markdown(
+                    advice
+                )
 
-                            {advice}
-
-                        </div>
-
-                    </div>
-                    """,
+                st.markdown(
+                    '</div>',
                     unsafe_allow_html=True
                 )
 
