@@ -1,229 +1,185 @@
-# 💰 AI Finance Assistant
+# 💼 AI Finance Assistant
 
-A modern personal finance management application built with Python and Streamlit.
+> A modern personal finance application that combines financial tracking, spending analysis, budgeting, financial health monitoring, financial calculators, and AI-powered financial insights.
 
-The AI Finance Assistant helps users track their income and expenses, understand their spending patterns, manage monthly budgets, monitor financial health, perform financial calculations, and receive AI-powered financial guidance.
-
----
-
-## 🚀 Project Overview
-
-Managing personal finances often requires using multiple tools for tracking expenses, calculating loans, monitoring budgets, and understanding spending habits.
-
-This project brings these functionalities together into one simple and interactive application.
-
-The application combines:
-
-- Financial tracking
-- Data analysis
-- Budget management
-- Financial calculations
-- Interactive dashboards
-- AI-assisted financial guidance
-- SQLite database storage
-
-The goal is to create a practical finance application while applying Python, data analysis, database management, and AI/ML concepts.
+![Python](https://img.shields.io/badge/Python-3.x-blue)
+![Streamlit](https://img.shields.io/badge/Streamlit-App-red)
+![Pandas](https://img.shields.io/badge/Pandas-Data%20Analysis-150458)
+![Plotly](https://img.shields.io/badge/Plotly-Visualization-3F4F75)
+![SQLite](https://img.shields.io/badge/Database-SQLite-003B57)
+![GitHub](https://img.shields.io/badge/Version%20Control-GitHub-black)
 
 ---
 
-## ✨ Features
+## 📌 Overview
 
-### 📊 Financial Dashboard
+**AI Finance Assistant** is a Python-based personal finance application designed to help users understand and manage their finances through an interactive and modern dashboard.
 
-The dashboard provides an overview of the user's financial activity.
+The application allows users to:
 
-It includes:
+- Track income and expenses
+- Analyze spending patterns
+- Manage monthly budgets
+- Monitor financial health
+- View financial trends
+- Perform common financial calculations
+- Generate financial insights
+- Access an AI-powered financial advisor
+
+The project was developed as a hands-on learning project while building practical skills in **Python, data analytics, application development, databases, and AI/ML fundamentals**.
+
+---
+
+# 📸 Application Screenshots
+
+## 📊 Financial Dashboard
+
+The dashboard provides a centralized overview of income, expenses, balance, savings, financial health, spending patterns, and budget utilization.
+
+![Financial Dashboard](screenshots/dashboard.png)
+
+---
+
+## 🎯 Budget Planner
+
+The Budget Planner allows users to define monthly category budgets and compare planned spending with actual expenses.
+
+![Budget Planner](screenshots/budget-planner.png)
+
+---
+
+## 📈 Spending Analysis
+
+The Spending Analysis section helps users understand where their money is being spent through category-level analysis and visualizations.
+
+![Spending Analysis](screenshots/spending-analysis.png)
+
+---
+
+## 📜 Transaction History
+
+Users can review their income and expense history and analyze monthly financial performance.
+
+![Transaction History](screenshots/history.png)
+
+---
+
+## 🧮 Financial Calculators
+
+The application provides commonly used financial calculators for simple interest, compound interest, SIP, and EMI calculations.
+
+![Financial Calculators](screenshots/calculators.png)
+
+---
+
+## 🤖 AI Financial Advisor
+
+The AI Financial Advisor uses a structured financial summary to generate AI-powered financial insights.
+
+![AI Financial Advisor](screenshots/ai-advisor.png)
+
+---
+
+# ✨ Key Features
+
+### 📊 Interactive Dashboard
+
+Provides an overview of:
 
 - Total income
 - Total expenses
-- Net balance
+- Current balance
 - Savings rate
-- Financial health overview
-- Financial insights
-- Spending visualization
+- Expense ratio
+- Financial health
+- Budget utilization
+- Spending breakdown
 - Financial trends
 - Recent transactions
-- Monthly budget snapshot
 
----
+### 💰 Income & Expense Tracking
 
-### 💵 Income & Expense Tracking
-
-Users can record their financial transactions.
-
-#### Income
-
-Users can add:
+Users can record:
 
 - Income source
-- Amount
-- Date
-
-#### Expenses
-
-Users can add:
-
 - Expense category
 - Amount
-- Date
+- Transaction date
 
-All transactions are stored in a SQLite database.
-
----
-
-### 📋 Transaction History
-
-The application maintains a history of recorded transactions.
-
-Users can:
-
-- View income records
-- View expense records
-- Review transaction dates
-- Delete unwanted records
-
----
+Data is stored locally using SQLite.
 
 ### 📈 Spending Analysis
 
-The application analyzes spending patterns by category.
+Analyze expenses by category and identify:
 
-Users can understand:
-
-- Where their money is being spent
+- Total spending
+- Number of categories
+- Highest spending category
 - Category-wise spending
-- Spending distribution
-- Monthly spending patterns
-
-Interactive charts are used to make the information easier to understand.
-
----
+- Spending percentage
 
 ### 🎯 Budget Planner
 
 Users can create monthly budgets for different spending categories.
 
-The Budget Planner provides:
+The application compares:
 
-- Category-wise budgets
-- Actual spending
-- Remaining budget
-- Budget utilization
-- Budget status
-- Budget vs Actual comparison
+**Budget → Actual Spending → Remaining Budget**
 
-The dashboard also provides a quick budget snapshot for the selected month.
+and identifies whether a category is:
 
----
-
-### 🧮 Financial Calculators
-
-The application includes financial calculation tools such as:
-
-- Simple Interest
-- Compound Interest
-- EMI Calculator
-
-These tools help users perform common financial calculations without leaving the application.
-
----
-
-### 🧠 Financial Insights
-
-The application analyzes financial data and generates useful insights based on:
-
-- Income
-- Expenses
-- Savings
-- Spending patterns
-- Budget utilization
-
-The purpose is to convert raw financial data into information that users can understand more easily.
-
----
+- Within Budget
+- Almost Reached
+- Over Budget
 
 ### ❤️ Financial Health
 
-The application provides a financial health overview based on the user's financial activity.
+The application calculates a financial health score using financial indicators such as income, expenses, savings, and spending patterns.
 
-It considers factors such as:
+### 💡 Financial Insights
 
-- Income
-- Expenses
-- Savings
+The application compares financial activity and generates insights based on:
+
+- Income trends
+- Expense trends
+- Savings trends
 - Spending behavior
-- Budget performance
-
-This gives users a quick view of their overall financial situation.
-
----
+- Budget utilization
 
 ### 🤖 AI Financial Advisor
 
-The application includes an AI-powered financial advisor component.
+The AI Advisor converts financial information into a structured prompt and uses an AI model to generate financial guidance.
 
-Users can use it to receive financial guidance based on the information provided to the application.
+The application also includes error handling for situations where an external AI service is unavailable.
 
-The AI component is designed to demonstrate how AI can be integrated into a personal finance application.
+### 🧮 Financial Calculators
 
-> Note: AI functionality may depend on the availability and configuration of the selected AI API.
+The application includes:
 
----
-
-## 🛠️ Technology Stack
-
-### Programming Language
-
-- Python
-
-### User Interface
-
-- Streamlit
-
-### Data Analysis
-
-- Pandas
-
-### Visualization
-
-- Plotly
-
-### Database
-
-- SQLite
-
-### AI
-
-- Generative AI / LLM integration
-
-### Development Tools
-
-- Visual Studio Code
-- Git
-- GitHub
+- Simple Interest Calculator
+- Compound Interest Calculator
+- SIP Calculator
+- EMI Calculator
 
 ---
 
-## 🏗️ Project Structure
+# 🧠 AI & Data Analytics
+
+The project combines traditional financial calculations with AI-oriented functionality.
+
+### Financial Data Flow
 
 ```text
-AI-Finance-Assistant/
-│
-├── app/
-│   ├── main.py
-│   ├── finance.py
-│   ├── expense_tracker.py
-│   ├── income_tracker.py
-│   ├── financial_summary.py
-│   ├── financial_advisor.py
-│   ├── spending_analysis.py
-│   ├── ai_advisor.py
-│   ├── database.py
-│   ├── financial_insights.py
-│   ├── financial_health.py
-│   ├── web_app.py
-│   └── budget.py
-│
-├── README.md
-│
-└── finance.db
+User Financial Data
+        ↓
+SQLite Database
+        ↓
+Python Processing
+        ↓
+Pandas Analysis
+        ↓
+Financial Metrics
+        ↓
+Charts & Insights
+        ↓
+AI Financial Advisor
