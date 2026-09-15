@@ -27,6 +27,13 @@ from financial_health import (
     calculate_financial_health_score
 )
 
+from budget import (
+    calculate_budget_status,
+    calculate_total_budget,
+    calculate_total_spending,
+    calculate_remaining_budget
+)
+
 from ai_advisor import (
     create_financial_prompt,
     get_ai_financial_advice
@@ -39,7 +46,10 @@ from database import (
     get_all_expenses,
     get_monthly_history,
     delete_income,
-    delete_expense
+    delete_expense,
+    save_budget,
+    get_budgets,
+    delete_budget
 )
 
 
@@ -382,6 +392,34 @@ st.markdown(
         font-size: 1.35rem;
         font-weight: 800;
         margin: 6px 0 3px;
+    }
+
+    .budget-card {
+        background:
+            linear-gradient(
+                145deg,
+                rgba(17, 27, 46, 0.98),
+                rgba(11, 18, 32, 0.98)
+            );
+
+        border: 1px solid #22304a;
+        border-radius: 18px;
+
+        padding: 20px;
+
+        margin-bottom: 12px;
+    }
+
+    .budget-category {
+        font-size: 1rem;
+        font-weight: 750;
+        color: #f8fafc;
+        margin-bottom: 5px;
+    }
+
+    .budget-details {
+        color: #8292aa;
+        font-size: 0.82rem;
     }
 
     .stButton > button {
@@ -979,6 +1017,7 @@ page = st.sidebar.radio(
         "Add Transaction",
         "History",
         "Spending Analysis",
+        "Budget Planner",
         "Calculators",
         "AI Financial Advisor"
     ]
@@ -1083,10 +1122,6 @@ if page == "Dashboard":
         else 0
     )
 
-    # -----------------------------------------------------
-    # WELCOME
-    # -----------------------------------------------------
-
     if balance > 0:
 
         message = (
@@ -1127,10 +1162,6 @@ if page == "Dashboard":
         """,
         unsafe_allow_html=True
     )
-
-    # -----------------------------------------------------
-    # KPI CARDS
-    # -----------------------------------------------------
 
     col1, col2, col3, col4 = st.columns(4)
 
@@ -2400,6 +2431,501 @@ elif page == "Spending Analysis":
 
         st.info(
             "No expenses recorded for this period."
+        )
+
+
+# =========================================================
+# BUDGET PLANNER
+# =========================================================
+
+elif page == "Budget Planner":
+
+    st.markdown(
+        '<div class="main-title">'
+        'Budget Planner'
+        '</div>',
+        unsafe_allow_html=True
+    )
+
+    st.markdown(
+        '<div class="subtitle">'
+        'Set monthly spending limits and compare your budget '
+        'with your actual expenses.'
+        '</div>',
+        unsafe_allow_html=True
+    )
+
+    # -----------------------------------------------------
+    # MONTH SELECTION
+    # -----------------------------------------------------
+
+    current_month = date.today().strftime("%Y-%m")
+
+    budget_month_options = list(available_months)
+
+    if current_month not in budget_month_options:
+
+        budget_month_options.insert(
+            0,
+            current_month
+        )
+
+    if not budget_month_options:
+
+        budget_month_options = [
+            current_month
+        ]
+
+    selected_budget_month = st.selectbox(
+        "Budget Month",
+        budget_month_options,
+        format_func=month_display
+    )
+
+    # -----------------------------------------------------
+    # ADD BUDGET
+    # -----------------------------------------------------
+
+    st.markdown(
+        '<div class="section-title">'
+        'Create Monthly Budget'
+        '</div>',
+        unsafe_allow_html=True
+    )
+
+    budget_col1, budget_col2, budget_col3 = st.columns(
+        [1.3, 1, 0.8]
+    )
+
+    with budget_col1:
+
+        budget_category = st.selectbox(
+            "Expense Category",
+            [
+                "Rent",
+                "Food",
+                "Travel",
+                "Shopping",
+                "Bills",
+                "Entertainment",
+                "Healthcare",
+                "Education",
+                "Other"
+            ]
+        )
+
+    with budget_col2:
+
+        budget_amount = st.number_input(
+            "Budget Amount (₹)",
+            min_value=0.0,
+            step=500.0,
+            value=5000.0
+        )
+
+    with budget_col3:
+
+        st.write("")
+        st.write("")
+
+        add_budget_button = st.button(
+            "Add Budget",
+            use_container_width=True
+        )
+
+    if add_budget_button:
+
+        if budget_amount <= 0:
+
+            st.error(
+                "Please enter a budget amount greater than zero."
+            )
+
+        else:
+
+            save_budget(
+                budget_category,
+                budget_amount,
+                selected_budget_month
+            )
+
+            st.success(
+                f"{budget_category} budget added successfully."
+            )
+
+            st.rerun()
+
+    # -----------------------------------------------------
+    # LOAD BUDGETS
+    # -----------------------------------------------------
+
+    budget_rows = get_budgets(
+        selected_budget_month
+    )
+
+    category_budgets = {}
+
+    for row in budget_rows:
+
+        if isinstance(row, (tuple, list)):
+
+            if len(row) >= 4:
+
+                budget_id = row[0]
+                category = row[1]
+                amount = float(row[2])
+                month = row[3]
+
+                category_budgets[category] = amount
+
+    # -----------------------------------------------------
+    # ACTUAL SPENDING
+    # -----------------------------------------------------
+
+    month_expenses = filter_by_month(
+        expenses,
+        selected_budget_month
+    )
+
+    category_totals = calculate_category_totals(
+        month_expenses
+    )
+
+    # -----------------------------------------------------
+    # BUDGET OVERVIEW
+    # -----------------------------------------------------
+
+    st.markdown(
+        '<div class="section-title">'
+        'Budget Overview'
+        '</div>',
+        unsafe_allow_html=True
+    )
+
+    if category_budgets:
+
+        total_budget = calculate_total_budget(
+            category_budgets
+        )
+
+        total_spending = calculate_total_spending(
+            category_totals
+        )
+
+        remaining_budget = calculate_remaining_budget(
+            total_budget,
+            total_spending
+        )
+
+        overview_col1, overview_col2, overview_col3 = (
+            st.columns(3)
+        )
+
+        with overview_col1:
+
+            st.markdown(
+                f"""
+                <div class="metric-card">
+
+                    <div class="metric-label">
+                        TOTAL BUDGET
+                    </div>
+
+                    <div class="metric-value metric-blue">
+                        {format_currency(total_budget)}
+                    </div>
+
+                    <div class="metric-subtitle">
+                        Planned monthly spending
+                    </div>
+
+                </div>
+                """,
+                unsafe_allow_html=True
+            )
+
+        with overview_col2:
+
+            st.markdown(
+                f"""
+                <div class="metric-card">
+
+                    <div class="metric-label">
+                        ACTUAL SPENDING
+                    </div>
+
+                    <div class="metric-value metric-negative">
+                        {format_currency(total_spending)}
+                    </div>
+
+                    <div class="metric-subtitle">
+                        Recorded expenses
+                    </div>
+
+                </div>
+                """,
+                unsafe_allow_html=True
+            )
+
+        with overview_col3:
+
+            remaining_class = (
+                "metric-positive"
+                if remaining_budget >= 0
+                else "metric-negative"
+            )
+
+            st.markdown(
+                f"""
+                <div class="metric-card">
+
+                    <div class="metric-label">
+                        REMAINING BUDGET
+                    </div>
+
+                    <div class="metric-value {remaining_class}">
+                        {format_currency(remaining_budget)}
+                    </div>
+
+                    <div class="metric-subtitle">
+                        Budget minus spending
+                    </div>
+
+                </div>
+                """,
+                unsafe_allow_html=True
+            )
+
+        # -------------------------------------------------
+        # CATEGORY STATUS
+        # -------------------------------------------------
+
+        st.markdown(
+            '<div class="section-title">'
+            'Category Budget Status'
+            '</div>',
+            unsafe_allow_html=True
+        )
+
+        budget_status = calculate_budget_status(
+            category_budgets,
+            category_totals
+        )
+
+        for category, status_data in budget_status.items():
+
+            budget = status_data["budget"]
+            spent = status_data["spent"]
+            remaining = status_data["remaining"]
+            percentage_used = status_data["percentage_used"]
+            status = status_data["status"]
+
+            st.markdown(
+                f"""
+                <div class="budget-card">
+
+                    <div class="budget-category">
+                        {category}
+                    </div>
+
+                    <div class="budget-details">
+                        Spent {format_currency(spent)}
+                        of
+                        {format_currency(budget)}
+                        &nbsp;·&nbsp;
+                        {percentage_used:.1f}% used
+                    </div>
+
+                </div>
+                """,
+                unsafe_allow_html=True
+            )
+
+            progress_value = min(
+                percentage_used / 100,
+                1.0
+            )
+
+            st.progress(
+                progress_value
+            )
+
+            if status == "Over Budget":
+
+                st.error(
+                    f"{category}: Over budget by "
+                    f"{format_currency(abs(remaining))}."
+                )
+
+            elif status == "Almost Reached":
+
+                st.warning(
+                    f"{category}: Almost reached the budget. "
+                    f"{format_currency(max(remaining, 0))} remaining."
+                )
+
+            else:
+
+                st.success(
+                    f"{category}: Within budget. "
+                    f"{format_currency(max(remaining, 0))} remaining."
+                )
+
+        # -------------------------------------------------
+        # BUDGET VS ACTUAL CHART
+        # -------------------------------------------------
+
+        st.markdown(
+            '<div class="section-title">'
+            'Budget vs Actual Spending'
+            '</div>',
+            unsafe_allow_html=True
+        )
+
+        chart_rows = []
+
+        for category in category_budgets:
+
+            chart_rows.append(
+                {
+                    "Category": category,
+                    "Budget": category_budgets[category],
+                    "Actual Spending": category_totals.get(
+                        category,
+                        0
+                    )
+                }
+            )
+
+        budget_chart_df = pd.DataFrame(
+            chart_rows
+        )
+
+        if not budget_chart_df.empty:
+
+            budget_chart_long = budget_chart_df.melt(
+                id_vars="Category",
+                value_vars=[
+                    "Budget",
+                    "Actual Spending"
+                ],
+                var_name="Type",
+                value_name="Amount"
+            )
+
+            budget_fig = px.bar(
+                budget_chart_long,
+                x="Category",
+                y="Amount",
+                color="Type",
+                barmode="group",
+                text="Amount"
+            )
+
+            budget_fig.update_traces(
+                texttemplate="₹%{text:,.0f}",
+                textposition="outside"
+            )
+
+            budget_fig.update_layout(
+                title="Planned Budget vs Actual Spending",
+                paper_bgcolor="rgba(0,0,0,0)",
+                plot_bgcolor="rgba(0,0,0,0)",
+
+                font=dict(
+                    color="#dbe5f2"
+                ),
+
+                yaxis=dict(
+                    gridcolor="#202d43",
+                    zeroline=False
+                ),
+
+                margin=dict(
+                    l=20,
+                    r=20,
+                    t=55,
+                    b=20
+                ),
+
+                legend=dict(
+                    orientation="h",
+                    y=1.08,
+                    x=0
+                )
+            )
+
+            st.plotly_chart(
+                budget_fig,
+                use_container_width=True,
+                config={
+                    "displayModeBar": False
+                }
+            )
+
+        # -------------------------------------------------
+        # DELETE BUDGET
+        # -------------------------------------------------
+
+        st.markdown(
+            '<div class="section-title">'
+            'Manage Budgets'
+            '</div>',
+            unsafe_allow_html=True
+        )
+
+        if budget_rows:
+
+            budget_options = {}
+
+            for row in budget_rows:
+
+                if len(row) >= 4:
+
+                    budget_id = row[0]
+                    category = row[1]
+                    amount = float(row[2])
+
+                    label = (
+                        f"#{budget_id} | "
+                        f"{category} | "
+                        f"{format_currency(amount)}"
+                    )
+
+                    budget_options[label] = budget_id
+
+            if budget_options:
+
+                selected_budget = st.selectbox(
+                    "Choose budget to delete",
+                    list(
+                        budget_options.keys()
+                    )
+                )
+
+                if st.button(
+                    "Delete Budget"
+                ):
+
+                    selected_budget_id = budget_options[
+                        selected_budget
+                    ]
+
+                    delete_budget(
+                        selected_budget_id
+                    )
+
+                    st.success(
+                        "Budget deleted successfully."
+                    )
+
+                    st.rerun()
+
+    else:
+
+        st.info(
+            f"No budgets created for {month_display(selected_budget_month)} yet. "
+            "Create a category budget above to start planning your spending."
         )
 
 

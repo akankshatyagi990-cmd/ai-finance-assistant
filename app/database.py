@@ -46,6 +46,16 @@ def create_tables():
         )
     """)
 
+    # Budget table
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS budgets (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            category TEXT NOT NULL,
+            amount REAL NOT NULL,
+            month TEXT NOT NULL
+        )
+    """)
+
     connection.commit()
     connection.close()
 
@@ -258,6 +268,75 @@ def get_monthly_history():
 
 
 # ---------------------------------
+# Save Budget
+# ---------------------------------
+
+def save_budget(category, amount, month):
+
+    connection = get_connection()
+    cursor = connection.cursor()
+
+    cursor.execute("""
+        INSERT INTO budgets (category, amount, month)
+        VALUES (?, ?, ?)
+    """, (category, amount, month))
+
+    connection.commit()
+    connection.close()
+
+
+# ---------------------------------
+# Get Budgets
+# ---------------------------------
+
+def get_budgets(month=None):
+
+    connection = get_connection()
+    cursor = connection.cursor()
+
+    if month is not None:
+
+        cursor.execute("""
+            SELECT id, category, amount, month
+            FROM budgets
+            WHERE month = ?
+            ORDER BY category
+        """, (month,))
+
+    else:
+
+        cursor.execute("""
+            SELECT id, category, amount, month
+            FROM budgets
+            ORDER BY month DESC, category
+        """)
+
+    rows = cursor.fetchall()
+
+    connection.close()
+
+    return rows
+
+
+# ---------------------------------
+# Delete Budget
+# ---------------------------------
+
+def delete_budget(budget_id):
+
+    connection = get_connection()
+    cursor = connection.cursor()
+
+    cursor.execute("""
+        DELETE FROM budgets
+        WHERE id = ?
+    """, (budget_id,))
+
+    connection.commit()
+    connection.close()
+
+
+# ---------------------------------
 # Delete Income
 # ---------------------------------
 
@@ -298,4 +377,3 @@ def delete_expense(expense_id):
 # ---------------------------------
 
 create_tables()
-
