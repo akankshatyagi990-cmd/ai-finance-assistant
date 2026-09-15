@@ -183,3 +183,98 @@ Financial Metrics
 Charts & Insights
         ↓
 AI Financial Advisor
+
+Financial Information
+        ↓
+Financial Summary
+        ↓
+Prompt Generation
+        ↓
+AI Model
+        ↓
+Financial Insights
+
+| Technology    | Purpose                              |
+| ------------- | ------------------------------------ |
+| Python        | Core application logic               |
+| Streamlit     | Interactive web application          |
+| Pandas        | Data processing and analysis         |
+| Plotly        | Interactive charts and visualization |
+| SQLite        | Local database storage               |
+| Git           | Version control                      |
+| GitHub        | Source code management               |
+| AI / LLM APIs | AI-powered financial insights        |
+| VS Code       | Development environment              |
+
+📂 Project Structure
+ai-finance-assistant/
+│
+├── app/
+│   ├── main.py
+│   ├── finance.py
+│   ├── expense_tracker.py
+│   ├── income_tracker.py
+│   ├── financial_summary.py
+│   ├── financial_advisor.py
+│   ├── spending_analysis.py
+│   ├── financial_insights.py
+│   ├── financial_health.py
+│   ├── budget.py
+│   ├── ai_advisor.py
+│   ├── database.py
+│   └── web_app.py
+│
+├── screenshots/
+│   ├── dashboard.png
+│   ├── budget-planner.png
+│   ├── spending-analysis.png
+│   ├── history.png
+│   ├── calculators.png
+│   └── ai-advisor.png
+│
+├── README.md
+├── .gitignore
+└── finance.db
+
+🔄 Application Architecture
+                    ┌──────────────────┐
+                    │      User        │
+                    └────────┬─────────┘
+                             │
+                             ▼
+                    ┌──────────────────┐
+                    │    Streamlit     │
+                    │   Web Interface  │
+                    └────────┬─────────┘
+                             │
+             ┌───────────────┼───────────────┐
+             │               │               │
+             ▼               ▼               ▼
+        Transactions      Budgets       Calculators
+             │               │               │
+             └───────────────┼───────────────┘
+                             ▼
+                    ┌──────────────────┐
+                    │      SQLite      │
+                    │     Database     │
+                    └────────┬─────────┘
+                             │
+                             ▼
+                    ┌──────────────────┐
+                    │ Python Processing │
+                    └────────┬─────────┘
+                             │
+                    ┌────────┴────────┐
+                    ▼                 ▼
+              Pandas Analysis    Financial Logic
+                    │                 │
+                    └────────┬────────┘
+                             ▼
+                    ┌──────────────────┐
+                    │ Charts & Insights│
+                    └────────┬─────────┘
+                             │
+                             ▼
+                    ┌──────────────────┐
+                    │ AI Financial     │
+                    │ Advisor          │
