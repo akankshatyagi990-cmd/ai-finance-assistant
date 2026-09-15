@@ -139,20 +139,16 @@ st.markdown(
     .welcome-card {
         position: relative;
         overflow: hidden;
-
         background:
             linear-gradient(
                 135deg,
                 rgba(30, 41, 75, 0.95),
                 rgba(14, 22, 39, 0.98)
             );
-
         border: 1px solid #273652;
         border-radius: 22px;
-
         padding: 28px 32px;
         margin-bottom: 24px;
-
         box-shadow:
             0 15px 45px rgba(0, 0, 0, 0.20);
     }
@@ -160,15 +156,11 @@ st.markdown(
     .welcome-card:before {
         content: "";
         position: absolute;
-
         width: 240px;
         height: 240px;
-
         right: -80px;
         top: -100px;
-
         border-radius: 50%;
-
         background:
             radial-gradient(
                 circle,
@@ -180,15 +172,11 @@ st.markdown(
     .welcome-card:after {
         content: "";
         position: absolute;
-
         width: 130px;
         height: 130px;
-
         right: 90px;
         bottom: -90px;
-
         border-radius: 50%;
-
         background:
             radial-gradient(
                 circle,
@@ -200,22 +188,18 @@ st.markdown(
     .welcome-title {
         position: relative;
         z-index: 2;
-
         font-size: 1.55rem;
         font-weight: 800;
         letter-spacing: -0.4px;
-
         margin-bottom: 7px;
     }
 
     .welcome-text {
         position: relative;
         z-index: 2;
-
         color: #a7b4c8;
         font-size: 0.94rem;
         line-height: 1.6;
-
         max-width: 800px;
     }
 
@@ -226,17 +210,12 @@ st.markdown(
                 rgba(17, 27, 46, 0.98),
                 rgba(11, 18, 32, 0.98)
             );
-
         border: 1px solid #22304a;
         border-radius: 18px;
-
         padding: 21px 20px;
-
         min-height: 126px;
-
         box-shadow:
             0 10px 30px rgba(0, 0, 0, 0.14);
-
         transition:
             transform 0.2s ease,
             border-color 0.2s ease;
@@ -290,12 +269,9 @@ st.markdown(
                 rgba(13, 53, 48, 0.62),
                 rgba(12, 24, 36, 0.96)
             );
-
         border: 1px solid rgba(52, 211, 153, 0.22);
         border-radius: 20px;
-
         padding: 22px;
-
         min-height: 150px;
     }
 
@@ -326,13 +302,10 @@ st.markdown(
                 rgba(23, 34, 54, 0.92),
                 rgba(14, 23, 38, 0.95)
             );
-
         border: 1px solid #263650;
         border-radius: 17px;
-
         padding: 17px 19px;
         margin-bottom: 11px;
-
         box-shadow:
             0 7px 22px rgba(0, 0, 0, 0.12);
     }
@@ -356,10 +329,8 @@ st.markdown(
                 rgba(91, 31, 43, 0.32),
                 rgba(38, 19, 29, 0.42)
             );
-
         border: 1px solid rgba(248, 113, 113, 0.25);
         border-radius: 17px;
-
         padding: 17px 19px;
         margin-bottom: 11px;
     }
@@ -371,12 +342,9 @@ st.markdown(
                 rgba(17, 27, 46, 0.97),
                 rgba(11, 18, 32, 0.97)
             );
-
         border: 1px solid #22304a;
         border-radius: 17px;
-
         padding: 18px 19px;
-
         min-height: 105px;
     }
 
@@ -401,12 +369,9 @@ st.markdown(
                 rgba(17, 27, 46, 0.98),
                 rgba(11, 18, 32, 0.98)
             );
-
         border: 1px solid #22304a;
         border-radius: 18px;
-
         padding: 20px;
-
         margin-bottom: 12px;
     }
 
@@ -422,24 +387,37 @@ st.markdown(
         font-size: 0.82rem;
     }
 
+    .budget-snapshot {
+        background:
+            linear-gradient(
+                145deg,
+                rgba(24, 37, 64, 0.98),
+                rgba(11, 18, 32, 0.98)
+            );
+        border: 1px solid #2a3c5c;
+        border-radius: 20px;
+        padding: 22px;
+        margin-bottom: 15px;
+    }
+
+    .budget-status {
+        color: #94a3b8;
+        font-size: 0.82rem;
+        margin-top: 6px;
+    }
+
     .stButton > button {
         border-radius: 11px;
-
         border: 1px solid #33445f;
-
         background:
             linear-gradient(
                 135deg,
                 #1b2942,
                 #111b2e
             );
-
         color: #f8fafc;
-
         font-weight: 650;
-
         min-height: 42px;
-
         transition:
             transform 0.15s ease,
             border-color 0.15s ease;
@@ -644,6 +622,65 @@ def get_available_months(incomes, expenses):
     )
 
 
+def get_budget_months():
+
+    budget_months = set()
+
+    try:
+
+        all_budgets = get_budgets()
+
+        for row in all_budgets:
+
+            if isinstance(row, (tuple, list)):
+
+                if len(row) >= 4:
+
+                    month = row[3]
+
+                    if month:
+
+                        budget_months.add(
+                            str(month)[:7]
+                        )
+
+    except Exception:
+
+        pass
+
+    return budget_months
+
+
+def get_combined_available_months(
+    incomes,
+    expenses
+):
+
+    transaction_months = set(
+        get_available_months(
+            incomes,
+            expenses
+        )
+    )
+
+    budget_months = get_budget_months()
+
+    current_month = date.today().strftime(
+        "%Y-%m"
+    )
+
+    all_months = (
+        transaction_months |
+        budget_months |
+        {current_month}
+    )
+
+    return sorted(
+        all_months,
+        reverse=True
+    )
+
+
 def month_display(month):
 
     if month == "All Time":
@@ -719,6 +756,190 @@ def get_month_totals(
         income,
         expenses_total
     )
+
+
+# =========================================================
+# BUDGET HELPERS
+# =========================================================
+
+def get_budget_data_for_month(
+    selected_month,
+    expenses
+):
+
+    if selected_month == "All Time":
+
+        return None
+
+    budget_rows = get_budgets(
+        selected_month
+    )
+
+    category_budgets = {}
+
+    for row in budget_rows:
+
+        if isinstance(row, (tuple, list)):
+
+            if len(row) >= 4:
+
+                category = row[1]
+                amount = float(row[2])
+
+                category_budgets[
+                    category
+                ] = amount
+
+    month_expenses = filter_by_month(
+        expenses,
+        selected_month
+    )
+
+    category_totals = calculate_category_totals(
+        month_expenses
+    )
+
+    if not category_budgets:
+
+        return None
+
+    total_budget = calculate_total_budget(
+        category_budgets
+    )
+
+    total_spending = calculate_total_spending(
+        category_totals
+    )
+
+    remaining_budget = calculate_remaining_budget(
+        total_budget,
+        total_spending
+    )
+
+    if total_budget > 0:
+
+        budget_used_percentage = (
+            total_spending /
+            total_budget
+        ) * 100
+
+    else:
+
+        budget_used_percentage = 0
+
+    budget_status = calculate_budget_status(
+        category_budgets,
+        category_totals
+    )
+
+    if total_spending > total_budget:
+
+        overall_status = "Over Budget"
+
+    elif budget_used_percentage >= 80:
+
+        overall_status = "Almost Reached"
+
+    else:
+
+        overall_status = "Within Budget"
+
+    return {
+        "budget_rows": budget_rows,
+        "category_budgets": category_budgets,
+        "category_totals": category_totals,
+        "total_budget": total_budget,
+        "total_spending": total_spending,
+        "remaining_budget": remaining_budget,
+        "budget_used_percentage": budget_used_percentage,
+        "budget_status": budget_status,
+        "overall_status": overall_status
+    }
+
+
+def create_budget_snapshot_chart(
+    category_budgets,
+    category_totals
+):
+
+    chart_rows = []
+
+    for category in category_budgets:
+
+        chart_rows.append(
+            {
+                "Category": category,
+                "Budget": category_budgets[
+                    category
+                ],
+                "Actual Spending": category_totals.get(
+                    category,
+                    0
+                )
+            }
+        )
+
+    if not chart_rows:
+
+        return None
+
+    budget_df = pd.DataFrame(
+        chart_rows
+    )
+
+    budget_long = budget_df.melt(
+        id_vars="Category",
+        value_vars=[
+            "Budget",
+            "Actual Spending"
+        ],
+        var_name="Type",
+        value_name="Amount"
+    )
+
+    fig = px.bar(
+        budget_long,
+        x="Category",
+        y="Amount",
+        color="Type",
+        barmode="group",
+        text="Amount"
+    )
+
+    fig.update_traces(
+        texttemplate="₹%{text:,.0f}",
+        textposition="outside"
+    )
+
+    fig.update_layout(
+        title="Budget vs Actual Spending",
+        paper_bgcolor="rgba(0,0,0,0)",
+        plot_bgcolor="rgba(0,0,0,0)",
+
+        font=dict(
+            color="#dbe5f2"
+        ),
+
+        yaxis=dict(
+            gridcolor="#202d43",
+            zeroline=False
+        ),
+
+        margin=dict(
+            l=20,
+            r=20,
+            t=55,
+            b=20
+        ),
+
+        legend=dict(
+            orientation="h",
+            y=1.08,
+            x=0
+        )
+    )
+
+    return fig
 
 
 # =========================================================
@@ -971,7 +1192,7 @@ incomes = load_income()
 
 expenses = load_expenses()
 
-available_months = get_available_months(
+available_months = get_combined_available_months(
     incomes,
     expenses
 )
@@ -1262,6 +1483,227 @@ if page == "Dashboard":
             """,
             unsafe_allow_html=True
         )
+
+    # -----------------------------------------------------
+    # BUDGET SNAPSHOT — STEP 5
+    # -----------------------------------------------------
+
+    st.markdown(
+        '<div class="section-title">'
+        '🎯 Budget Snapshot'
+        '</div>',
+        unsafe_allow_html=True
+    )
+
+    budget_snapshot = get_budget_data_for_month(
+        selected_month,
+        expenses
+    )
+
+    if selected_month == "All Time":
+
+        st.info(
+            "Select a specific month to view its Budget Snapshot."
+        )
+
+    elif budget_snapshot is None:
+
+        st.info(
+            f"No budget has been created for "
+            f"{month_display(selected_month)} yet. "
+            "Go to Budget Planner to set monthly spending limits."
+        )
+
+    else:
+
+        snapshot_budget = budget_snapshot[
+            "total_budget"
+        ]
+
+        snapshot_spending = budget_snapshot[
+            "total_spending"
+        ]
+
+        snapshot_remaining = budget_snapshot[
+            "remaining_budget"
+        ]
+
+        snapshot_percentage = budget_snapshot[
+            "budget_used_percentage"
+        ]
+
+        snapshot_status = budget_snapshot[
+            "overall_status"
+        ]
+
+        budget_col1, budget_col2, budget_col3, budget_col4 = (
+            st.columns(4)
+        )
+
+        with budget_col1:
+
+            st.markdown(
+                f"""
+                <div class="metric-card">
+
+                    <div class="metric-label">
+                        TOTAL BUDGET
+                    </div>
+
+                    <div class="metric-value metric-blue">
+                        {format_currency(snapshot_budget)}
+                    </div>
+
+                    <div class="metric-subtitle">
+                        Planned monthly spending
+                    </div>
+
+                </div>
+                """,
+                unsafe_allow_html=True
+            )
+
+        with budget_col2:
+
+            st.markdown(
+                f"""
+                <div class="metric-card">
+
+                    <div class="metric-label">
+                        ACTUAL SPENDING
+                    </div>
+
+                    <div class="metric-value metric-negative">
+                        {format_currency(snapshot_spending)}
+                    </div>
+
+                    <div class="metric-subtitle">
+                        Recorded expenses
+                    </div>
+
+                </div>
+                """,
+                unsafe_allow_html=True
+            )
+
+        with budget_col3:
+
+            remaining_class = (
+                "metric-positive"
+                if snapshot_remaining >= 0
+                else "metric-negative"
+            )
+
+            remaining_text = (
+                format_currency(snapshot_remaining)
+                if snapshot_remaining >= 0
+                else "-" +
+                format_currency(
+                    abs(snapshot_remaining)
+                )
+            )
+
+            st.markdown(
+                f"""
+                <div class="metric-card">
+
+                    <div class="metric-label">
+                        REMAINING BUDGET
+                    </div>
+
+                    <div class="metric-value {remaining_class}">
+                        {remaining_text}
+                    </div>
+
+                    <div class="metric-subtitle">
+                        Budget minus spending
+                    </div>
+
+                </div>
+                """,
+                unsafe_allow_html=True
+            )
+
+        with budget_col4:
+
+            if snapshot_percentage > 100:
+
+                percentage_display = (
+                    f"{snapshot_percentage:.1f}%"
+                )
+
+            else:
+
+                percentage_display = (
+                    f"{snapshot_percentage:.1f}%"
+                )
+
+            st.markdown(
+                f"""
+                <div class="metric-card">
+
+                    <div class="metric-label">
+                        BUDGET USED
+                    </div>
+
+                    <div class="metric-value metric-purple">
+                        {percentage_display}
+                    </div>
+
+                    <div class="metric-subtitle">
+                        Of planned budget
+                    </div>
+
+                </div>
+                """,
+                unsafe_allow_html=True
+            )
+
+        progress_value = min(
+            snapshot_percentage / 100,
+            1.0
+        )
+
+        st.progress(
+            progress_value
+        )
+
+        if snapshot_status == "Over Budget":
+
+            st.error(
+                f"⚠️ You are over budget by "
+                f"{format_currency(abs(snapshot_remaining))}."
+            )
+
+        elif snapshot_status == "Almost Reached":
+
+            st.warning(
+                f"⚠️ You have used {snapshot_percentage:.1f}% "
+                f"of your monthly budget. "
+                f"{format_currency(max(snapshot_remaining, 0))} remains."
+            )
+
+        else:
+
+            st.success(
+                f"✓ Your spending is within budget. "
+                f"{format_currency(max(snapshot_remaining, 0))} remains."
+            )
+
+        snapshot_chart = create_budget_snapshot_chart(
+            budget_snapshot["category_budgets"],
+            budget_snapshot["category_totals"]
+        )
+
+        if snapshot_chart:
+
+            st.plotly_chart(
+                snapshot_chart,
+                use_container_width=True,
+                config={
+                    "displayModeBar": False
+                }
+            )
 
     # -----------------------------------------------------
     # FINANCIAL HEALTH
@@ -2459,9 +2901,13 @@ elif page == "Budget Planner":
     # MONTH SELECTION
     # -----------------------------------------------------
 
-    current_month = date.today().strftime("%Y-%m")
+    current_month = date.today().strftime(
+        "%Y-%m"
+    )
 
-    budget_month_options = list(available_months)
+    budget_month_options = list(
+        available_months
+    )
 
     if current_month not in budget_month_options:
 
@@ -2782,78 +3228,12 @@ elif page == "Budget Planner":
             unsafe_allow_html=True
         )
 
-        chart_rows = []
-
-        for category in category_budgets:
-
-            chart_rows.append(
-                {
-                    "Category": category,
-                    "Budget": category_budgets[category],
-                    "Actual Spending": category_totals.get(
-                        category,
-                        0
-                    )
-                }
-            )
-
-        budget_chart_df = pd.DataFrame(
-            chart_rows
+        budget_fig = create_budget_snapshot_chart(
+            category_budgets,
+            category_totals
         )
 
-        if not budget_chart_df.empty:
-
-            budget_chart_long = budget_chart_df.melt(
-                id_vars="Category",
-                value_vars=[
-                    "Budget",
-                    "Actual Spending"
-                ],
-                var_name="Type",
-                value_name="Amount"
-            )
-
-            budget_fig = px.bar(
-                budget_chart_long,
-                x="Category",
-                y="Amount",
-                color="Type",
-                barmode="group",
-                text="Amount"
-            )
-
-            budget_fig.update_traces(
-                texttemplate="₹%{text:,.0f}",
-                textposition="outside"
-            )
-
-            budget_fig.update_layout(
-                title="Planned Budget vs Actual Spending",
-                paper_bgcolor="rgba(0,0,0,0)",
-                plot_bgcolor="rgba(0,0,0,0)",
-
-                font=dict(
-                    color="#dbe5f2"
-                ),
-
-                yaxis=dict(
-                    gridcolor="#202d43",
-                    zeroline=False
-                ),
-
-                margin=dict(
-                    l=20,
-                    r=20,
-                    t=55,
-                    b=20
-                ),
-
-                legend=dict(
-                    orientation="h",
-                    y=1.08,
-                    x=0
-                )
-            )
+        if budget_fig:
 
             st.plotly_chart(
                 budget_fig,
@@ -2924,7 +3304,8 @@ elif page == "Budget Planner":
     else:
 
         st.info(
-            f"No budgets created for {month_display(selected_budget_month)} yet. "
+            f"No budgets created for "
+            f"{month_display(selected_budget_month)} yet. "
             "Create a category budget above to start planning your spending."
         )
 
